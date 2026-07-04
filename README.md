@@ -1,56 +1,51 @@
-# Welcome to your Expo app 👋
+# Tier Deck
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Rank absolutely everything. A universal tier-list phone app that pulls real data — video games, movies & TV, food & drinks, music — with cover art from public APIs. Search "zelda", stage the results, drag them into glowing S/A/B/C/D/F tiers, export the board as an image.
 
-## Get started
+## Run it on your phone
 
-1. Install dependencies
-
-   ```bash
-   npm install
+1. Install **Expo Go** from the App Store / Play Store on your phone.
+2. On this computer:
    ```
-
-2. Start the app
-
-   ```bash
+   npm install
    npx expo start
    ```
+3. Scan the QR code in the terminal with your phone (camera app on iPhone, Expo Go on Android). Phone and computer must be on the same Wi-Fi.
+   - If it can't connect (firewall / router isolation), use `npx expo start --tunnel` instead.
 
-In the output, you'll find options to open the app in a
+## API keys
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Three of the four categories work with zero setup. For **video games**:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+1. Get a free key (about 1 minute): https://rawg.io/apidocs
+2. Put it in `.env`:
+   ```
+   EXPO_PUBLIC_RAWG_KEY=your_key_here
+   ```
+3. Restart `npx expo start`.
 
-## Get a fresh project
+Optional: a TMDB key (`EXPO_PUBLIC_TMDB_KEY`, from themoviedb.org) upgrades Movies & TV with full TV-show coverage. Without it the app quietly uses iTunes movie search instead.
 
-When you're ready, run:
+| Category | Source | Key needed? |
+|---|---|---|
+| 🎮 Video games | RAWG | Yes (free) |
+| 🎬 Movies & TV | TMDB → iTunes fallback | Optional |
+| 🍜 Food & drinks | TheMealDB + TheCocktailDB | No |
+| 🎧 Music | iTunes Search | No |
 
-```bash
-npm run reset-project
-```
+## How to use
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+- **+** on the home screen → pick a category → search → tap items to stage them → **Create board**.
+- **Drag**: hold a card ~¼ second, it lifts into a ghost; drop it on a tier. Haptic ticks as you cross tier boundaries; drag near the top/bottom edge to auto-scroll.
+- **Tap-to-place**: tap a card, then tap a tier's label chip. (Also the accessibility path.)
+- **Long-press a tier chip**: rename, recolor, reorder, or delete that tier.
+- **Undo / redo** live in the board header. Everything auto-saves (watch the green dot pulse).
+- **Long-press a list** on home for duplicate / export / delete (delete has a 5-second undo).
+- **Export** renders a clean shareable PNG — share it anywhere or save to photos.
 
-### Other setup steps
+## Architecture notes
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- Expo SDK 57 (managed) + TypeScript + expo-router. State in zustand, persistence in AsyncStorage behind `src/store/storage.ts` (swap-in point for MMKV once on a dev build).
+- Every category is a `CategoryAdapter` (`src/data/adapters/`). New category = one adapter file + one registry line.
+- Drag layer (`src/features/board/drag/`) is a root-overlay ghost tracked by reanimated shared values; tier rows register Y-bands as drop zones, hit-testing runs on the UI thread.
+- Design tokens in `src/theme/tokens.ts` — three spring presets, one glass recipe, tier glow via SVG radial halos (Android has no colored shadows).

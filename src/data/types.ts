@@ -1,4 +1,12 @@
-export type Category = 'games' | 'movies' | 'food' | 'music';
+export type Category =
+  | 'games'
+  | 'movies'
+  | 'food'
+  | 'music'
+  | 'books'
+  | 'anime'
+  | 'sports'
+  | 'anything';
 
 export interface TierItem {
   /** `${category}:${sourceId}` — globally unique, dedupe-safe across categories. */

@@ -42,3 +42,6 @@ example
 # generated native folders
 /ios
 /android
+
+# Generated SEO site (rebuild with: npm run build:seo)
+seo-site/

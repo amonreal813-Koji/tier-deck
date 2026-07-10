@@ -3,6 +3,7 @@ import { create } from 'zustand';
 
 import type { Category, TierItem, TierList } from '@/data/types';
 import { DEFAULT_TIERS } from '@/theme/tierColors';
+import { decodeParamToDraft } from '@/utils/share';
 
 import { storage } from './storage';
 
@@ -21,6 +22,14 @@ interface ListsState {
   hydrated: boolean;
   hydrate: () => Promise<void>;
   createList: (title: string, category: Category, items: TierItem[]) => TierList;
+  /** Create a list with tiers pre-populated (used by "make it yours"). */
+  importList: (
+    title: string,
+    category: Category,
+    tiers: { label: string; color: string; items: TierItem[] }[]
+  ) => TierList;
+  /** Decode a shared `?d=` param into a new saved list. Null if malformed. */
+  importFromEncoded: (param: string) => TierList | null;
   upsertList: (list: TierList) => void;
   deleteList: (id: string) => void;
   duplicateList: (id: string) => TierList | null;
@@ -86,6 +95,36 @@ export const useListsStore = create<ListsState>((set, get) => ({
     persistList(list);
     persistIndex(get().lists);
     return list;
+  },
+
+  importList: (title, category, tiers) => {
+    const now = Date.now();
+    const allItems = tiers.flatMap((t) => t.items);
+    const list: TierList = {
+      id: Crypto.randomUUID(),
+      title,
+      category,
+      createdAt: now,
+      updatedAt: now,
+      items: Object.fromEntries(allItems.map((i) => [i.id, i])),
+      tiers: tiers.map((t) => ({
+        id: Crypto.randomUUID(),
+        label: t.label,
+        color: t.color,
+        itemIds: t.items.map((i) => i.id),
+      })),
+      unrankedIds: [],
+    };
+    set((s) => ({ lists: { ...s.lists, [list.id]: list } }));
+    persistList(list);
+    persistIndex(get().lists);
+    return list;
+  },
+
+  importFromEncoded: (param) => {
+    const draft = decodeParamToDraft(param);
+    if (!draft) return null;
+    return get().importList(draft.title, draft.category, draft.tiers);
   },
 
   upsertList: (list) => {

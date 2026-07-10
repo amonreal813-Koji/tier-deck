@@ -15,12 +15,27 @@ interface TmdbResult {
   vote_average?: number;
 }
 
-interface ItunesMovie {
-  trackId: number;
-  trackName: string;
-  artworkUrl100?: string;
-  releaseDate?: string;
-  primaryGenreName?: string;
+interface TvMazeResult {
+  show: {
+    id: number;
+    name: string;
+    premiered: string | null;
+    image: { medium: string; original: string } | null;
+  };
+}
+
+interface WikiSearchResponse {
+  query?: {
+    pages?: Record<
+      string,
+      {
+        pageid: number;
+        title: string;
+        index?: number;
+        thumbnail?: { source?: string };
+      }
+    >;
+  };
 }
 
 async function searchTmdb(query: string, signal: AbortSignal, key: string): Promise<TierItem[]> {
@@ -42,19 +57,43 @@ async function searchTmdb(query: string, signal: AbortSignal, key: string): Prom
     });
 }
 
-/** Key-free fallback so the category works out of the box. */
-async function searchItunesMovies(query: string, signal: AbortSignal): Promise<TierItem[]> {
-  const url = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=movie&limit=20`;
-  const json = await fetchJson<{ results: ItunesMovie[] }>(url, { signal });
-  return (json.results ?? [])
-    .filter((m) => m.artworkUrl100)
-    .map<TierItem>((m) => ({
-      id: `movies:itunes-${m.trackId}`,
-      name: m.trackName,
-      imageUrl: m.artworkUrl100!.replace('100x100', '600x600'),
-      subtitle: m.releaseDate ? `Film · ${m.releaseDate.slice(0, 4)}` : 'Film',
+/** TV shows via TVMaze — key-free, CORS-open, solid poster art. */
+async function searchTvMaze(query: string, signal: AbortSignal): Promise<TierItem[]> {
+  const url = `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`;
+  const json = await fetchJson<TvMazeResult[]>(url, { signal });
+  return (json ?? [])
+    .filter((r) => r.show.image)
+    .slice(0, 10)
+    .map<TierItem>((r) => ({
+      id: `movies:tvmaze-${r.show.id}`,
+      name: r.show.name,
+      imageUrl: r.show.image!.medium.replace('http://', 'https://'),
+      subtitle: r.show.premiered ? `TV · ${r.show.premiered.slice(0, 4)}` : 'TV',
       category: 'movies',
-      metadata: { genre: m.primaryGenreName ?? '' },
+    }));
+}
+
+/**
+ * Films via Wikipedia search + page images — key-free. Appending "film" to
+ * the search keeps results on-topic; pages without a lead image are dropped.
+ * (iTunes movie search is dead — returns zero results as of 2026.)
+ */
+async function searchWikiFilms(query: string, signal: AbortSignal): Promise<TierItem[]> {
+  const url =
+    `https://en.wikipedia.org/w/api.php?action=query&generator=search` +
+    `&gsrsearch=${encodeURIComponent(`${query} film`)}&gsrlimit=10` +
+    `&prop=pageimages&pithumbsize=342&pilicense=any&format=json&origin=*`;
+  const json = await fetchJson<WikiSearchResponse>(url, { signal });
+  const pages = Object.values(json.query?.pages ?? {});
+  return pages
+    .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+    .filter((p) => p.thumbnail?.source)
+    .map<TierItem>((p) => ({
+      id: `movies:wiki-${p.pageid}`,
+      name: p.title.replace(/ \([^)]*film[^)]*\)$/i, ''),
+      imageUrl: p.thumbnail!.source!,
+      subtitle: 'Film',
+      category: 'movies',
     }));
 }
 
@@ -64,13 +103,24 @@ export const tmdbAdapter: CategoryAdapter = {
   glyph: '🎬',
   accentColor: '#FF6B9D',
   blurb: 'Every film and show ever made',
-  // Works key-free via the iTunes fallback; a TMDB key just makes it richer.
+  // Works key-free via TVMaze + Wikipedia; a TMDB key just makes it richer.
   isConfigured: () => true,
-  configHint: 'Optional: add EXPO_PUBLIC_TMDB_KEY from themoviedb.org for full TV coverage.',
+  configHint: 'Optional: add EXPO_PUBLIC_TMDB_KEY from themoviedb.org for richer results.',
 
   async search(query, signal) {
     const key = getKey('TMDB');
     if (key) return searchTmdb(query, signal, key);
-    return searchItunesMovies(query, signal);
+
+    const [tv, films] = await Promise.allSettled([
+      searchTvMaze(query, signal),
+      searchWikiFilms(query, signal),
+    ]);
+    const items: TierItem[] = [];
+    if (films.status === 'fulfilled') items.push(...films.value);
+    if (tv.status === 'fulfilled') items.push(...tv.value);
+    if (tv.status === 'rejected' && films.status === 'rejected') {
+      throw films.reason;
+    }
+    return items;
   },
 };

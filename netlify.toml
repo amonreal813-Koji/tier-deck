@@ -1,0 +1,23 @@
+# Deploy the SEO tier-list site (the static seo-site/ folder).
+# This config is for the marketing/SEO site only — the Expo app deploys separately.
+#
+# 1. Push this repo to GitHub.
+# 2. On netlify.com → "Add new site" → import this repo.
+# 3. Site settings → Environment variables:
+#      BASE_URL   = https://your-domain.com     (your final site URL)
+#      AMAZON_TAG = yourtag-20                   (your Amazon Associates tag)
+# 4. Deploy. Every push rebuilds all 238 pages + sitemap.
+
+[build]
+  command = "node scripts/build-seo.mjs"
+  publish = "seo-site"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Nice URLs: /national-flags instead of /national-flags.html
+[[redirects]]
+  from = "/:slug"
+  to = "/:slug.html"
+  status = 200
+  force = false

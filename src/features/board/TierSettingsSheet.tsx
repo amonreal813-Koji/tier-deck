@@ -1,8 +1,10 @@
 import * as Haptics from 'expo-haptics';
 import React, { useEffect, useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import Animated, { FadeIn, FadeOut, SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { backdropEntering, backdropExiting, backdropFixed, sheetEntering, sheetExiting } from '@/theme/motion';
 
 import { GlassPanel } from '@/components/GlassPanel';
 import { GlowBadge } from '@/components/GlowBadge';
@@ -53,11 +55,11 @@ export function TierSettingsSheet({ tier, onClose }: TierSettingsSheetProps) {
 
   return (
     <Modal visible transparent animationType="none" onRequestClose={onClose}>
-      <Animated.View entering={FadeIn.duration(180)} exiting={FadeOut.duration(150)} style={styles.backdrop}>
+      <Animated.View entering={backdropEntering} exiting={backdropExiting} style={[styles.backdrop, backdropFixed]}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
         <Animated.View
-          entering={SlideInDown.springify().damping(16).stiffness(190)}
-          exiting={SlideOutDown.duration(180)}
+          entering={sheetEntering}
+          exiting={sheetExiting}
           style={{ marginHorizontal: spacing.md, marginBottom: insets.bottom + spacing.md }}
         >
           <GlassPanel radius={24}>

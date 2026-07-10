@@ -28,6 +28,10 @@ export const CATEGORY_ACCENTS = {
   movies: '#FF6B9D',
   food: '#FF8A3D',
   music: '#4CC9F0',
+  books: '#34D399',
+  anime: '#F472B6',
+  sports: '#F59E0B',
+  anything: '#FFD23F',
 } as const;
 
 export function withAlpha(hex: string, alpha: number): string {

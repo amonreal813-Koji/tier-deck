@@ -1,33 +1,123 @@
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
-import React, { useRef, useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import React, { useMemo, useRef, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ActionSheet } from '@/components/ActionSheet';
 import { AnimatedGradientBg } from '@/components/AnimatedGradientBg';
+import { GlassPanel } from '@/components/GlassPanel';
+import { PressableScale } from '@/components/PressableScale';
 import { useToast } from '@/components/Toast';
-import type { TierList } from '@/data/types';
-import { EmptyState } from '@/features/home/EmptyState';
+import { heroArtFor, itemNamesOf, premadeLists } from '@/data/premade';
+import type { Category, TierList } from '@/data/types';
 import { FAB } from '@/features/home/FAB';
-import { ListCard } from '@/features/home/ListCard';
+import { GridListCard, type Strip } from '@/features/home/GridListCard';
 import { useListsStore } from '@/store/useListsStore';
-import { colors, fonts, spacing, type } from '@/theme/tokens';
+import { CONTENT_MAX_WIDTH, useLayout } from '@/theme/layout';
+import { CATEGORY_ACCENTS, withAlpha } from '@/theme/tierColors';
+import { colors, fonts, radii, spacing, type } from '@/theme/tokens';
+import { rankByQuery } from '@/utils/search';
+
+const CAT_GLYPH: Record<Category, string> = {
+  games: '🎮',
+  movies: '🎬',
+  food: '🍜',
+  music: '🎧',
+  books: '📚',
+  anime: '🌸',
+  sports: '🏆',
+  anything: '🌐',
+};
+const CAT_LABEL: Record<Category, string> = {
+  games: 'Games',
+  movies: 'Movies & TV',
+  food: 'Food & Drinks',
+  music: 'Music',
+  books: 'Books',
+  anime: 'Anime',
+  sports: 'Athletes',
+  anything: 'Everything',
+};
+
+function relativeTime(ts: number): string {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60) return 'just now';
+  const m = Math.floor(s / 60);
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.floor(h / 24);
+  return d < 30 ? `${d}d ago` : new Date(ts).toLocaleDateString();
+}
+
+function userHeroUri(list: TierList): string | null {
+  const ids = [...list.tiers.flatMap((t) => t.itemIds), ...list.unrankedIds];
+  for (const id of ids) {
+    const it = list.items[id];
+    if (it?.imageUrl) return it.imageUrl;
+  }
+  return null;
+}
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const layout = useLayout();
+
   const lists = useListsStore((s) => s.lists);
   const deleteList = useListsStore((s) => s.deleteList);
   const duplicateList = useListsStore((s) => s.duplicateList);
   const upsertList = useListsStore((s) => s.upsertList);
   const toast = useToast((s) => s.show);
 
+  const [query, setQuery] = useState('');
+  const [activeCat, setActiveCat] = useState<Category | 'all'>('all');
+  const [expanded, setExpanded] = useState(false);
   const [sheetFor, setSheetFor] = useState<TierList | null>(null);
-  // Keeps the deleted list alive for the undo window.
   const lastDeleted = useRef<TierList | null>(null);
 
-  const sorted = Object.values(lists).sort((a, b) => b.updatedAt - a.updatedAt);
+  // Keep the first screen short: show a page of curated lists, expand on demand.
+  const PAGE = 12;
+
+  const userLists = useMemo(
+    () => Object.values(lists).sort((a, b) => b.updatedAt - a.updatedAt),
+    [lists]
+  );
+
+  // Category chips only for categories that actually have curated lists.
+  const categories = useMemo(() => {
+    const seen: Category[] = [];
+    for (const l of premadeLists) if (!seen.includes(l.category)) seen.push(l.category);
+    return seen;
+  }, []);
+
+  const byCat = <T extends { category: Category }>(arr: T[]) =>
+    activeCat === 'all' ? arr : arr.filter((l) => l.category === activeCat);
+
+  const consensus = rankByQuery(query, byCat(premadeLists), (l) => ({
+    title: l.title,
+    category: CAT_LABEL[l.category],
+    tagline: l.tagline,
+    itemNames: itemNamesOf(l),
+  }));
+
+  // When searching, show every match; otherwise page it (tap "Show all").
+  const paged = query.trim().length > 0 || expanded;
+  const shownConsensus = paged ? consensus : consensus.slice(0, PAGE);
+
+  const yours = rankByQuery(query, byCat(userLists), (l) => ({
+    title: l.title,
+    category: CAT_LABEL[l.category],
+    itemNames: Object.values(l.items).map((i) => i.name),
+  }));
+
+  const surpriseMe = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const pool = consensus.length ? consensus : premadeLists;
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    router.push({ pathname: '/premade/[premadeId]', params: { premadeId: pick.id } });
+  };
 
   const handleDelete = (list: TierList) => {
     lastDeleted.current = list;
@@ -47,39 +137,181 @@ export default function HomeScreen() {
     });
   };
 
+  const gridStyle = { flexDirection: 'row' as const, flexWrap: 'wrap' as const, gap: layout.gutter };
+
   return (
     <View style={styles.root}>
       <AnimatedGradientBg />
-      <FlatList
-        data={sorted}
-        keyExtractor={(l) => l.id}
-        contentContainerStyle={{
-          paddingTop: insets.top + spacing.lg,
-          paddingHorizontal: spacing.lg,
-          paddingBottom: 140,
-          flexGrow: 1,
-        }}
-        ListHeaderComponent={
-          <View style={styles.header}>
-            <Text style={styles.title}>Tier Deck</Text>
-            <Text style={styles.tagline}>Rank absolutely everything.</Text>
-          </View>
-        }
-        ListEmptyComponent={<EmptyState />}
-        renderItem={({ item, index }) => (
-          <ListCard
-            list={item}
-            index={index}
-            onPress={() => router.push(`/board/${item.id}`)}
-            onLongPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              setSheetFor(item);
-            }}
-          />
-        )}
+      <ScrollView
+        contentContainerStyle={{ alignItems: 'center', paddingBottom: 140 }}
         showsVerticalScrollIndicator={false}
-      />
+        keyboardShouldPersistTaps="handled"
+      >
+        <View
+          style={{
+            width: '100%',
+            maxWidth: CONTENT_MAX_WIDTH,
+            paddingHorizontal: layout.horizontalPadding,
+            paddingTop: insets.top + spacing.lg,
+          }}
+        >
+          {/* Header */}
+          <View style={styles.headerRow}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.title}>Tier Deck</Text>
+              <Text style={styles.tagline}>Rank absolutely everything.</Text>
+            </View>
+            <PressableScale onPress={surpriseMe} style={styles.dice} accessibilityLabel="Surprise me">
+              <Text style={styles.diceText}>🎲</Text>
+            </PressableScale>
+          </View>
+
+          {/* Fuzzy search */}
+          <GlassPanel radius={16} style={{ marginBottom: spacing.md }}>
+            <View style={styles.searchRow}>
+              <Text style={styles.searchIcon}>🔍</Text>
+              <TextInput
+                value={query}
+                onChangeText={setQuery}
+                placeholder="Search lists — try 'zelda', 'pizza', 'movies'…"
+                placeholderTextColor={colors.textLow}
+                style={styles.searchInput}
+                autoCorrect={false}
+                returnKeyType="search"
+              />
+              {query.length > 0 ? (
+                <PressableScale onPress={() => setQuery('')} hitSlop={10} style={styles.clearBtn}>
+                  <Text style={styles.clearText}>✕</Text>
+                </PressableScale>
+              ) : null}
+            </View>
+          </GlassPanel>
+
+          {/* Category chips */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: spacing.sm, paddingVertical: spacing.xs }}
+            style={{ marginBottom: spacing.lg }}
+          >
+            {(['all', ...categories] as const).map((section) => {
+              const active = activeCat === section;
+              const accent = section === 'all' ? colors.brandA : CATEGORY_ACCENTS[section];
+              return (
+                <PressableScale
+                  key={section}
+                  onPress={() => {
+                    setActiveCat(section);
+                    setExpanded(false);
+                  }}
+                  scaleTo={0.93}
+                  style={[
+                    styles.chip,
+                    active && { backgroundColor: withAlpha(accent, 0.2), borderColor: withAlpha(accent, 0.6) },
+                  ]}
+                >
+                  <Text style={[styles.chipText, active && { color: colors.textHi }]}>
+                    {section === 'all' ? '✨ All' : `${CAT_GLYPH[section]} ${CAT_LABEL[section]}`}
+                  </Text>
+                </PressableScale>
+              );
+            })}
+          </ScrollView>
+
+          {/* The Consensus */}
+          <View style={styles.sectionHead}>
+            <Text style={styles.sectionTitle}>The Consensus</Text>
+            <Text style={styles.sectionSub}>{consensus.length} curated · tap in for the reasons</Text>
+          </View>
+          {consensus.length === 0 ? (
+            <Text style={styles.noResults}>No curated lists match “{query}”. Your search might make a great new list — tap +.</Text>
+          ) : (
+            <View style={[gridStyle, { marginBottom: spacing.md }]}>
+              {shownConsensus.map((list, i) => {
+                const strips: Strip[] = list.tiers.map((t) => ({ color: t.color, weight: t.items.length }));
+                const count = list.tiers.reduce((n, t) => n + t.items.length, 0);
+                return (
+                  <GridListCard
+                    key={list.id}
+                    title={list.title}
+                    subtitle={list.tagline}
+                    glyph={CAT_GLYPH[list.category]}
+                    accent={CATEGORY_ACCENTS[list.category]}
+                    strips={strips}
+                    badge={`${count} ranked`}
+                    heroSpec={heroArtFor(list)}
+                    width={layout.cardWidth}
+                    index={i}
+                    onPress={() =>
+                      router.push({ pathname: '/premade/[premadeId]', params: { premadeId: list.id } })
+                    }
+                  />
+                );
+              })}
+            </View>
+          )}
+
+          {!paged && consensus.length > PAGE ? (
+            <PressableScale onPress={() => setExpanded(true)} style={styles.showAll}>
+              <Text style={styles.showAllText}>Show all {consensus.length} lists ↓</Text>
+            </PressableScale>
+          ) : null}
+          {paged && !query && consensus.length > PAGE ? (
+            <PressableScale onPress={() => setExpanded(false)} style={styles.showAll}>
+              <Text style={styles.showAllText}>Show less ↑</Text>
+            </PressableScale>
+          ) : null}
+
+          <View style={{ height: spacing.xl }} />
+
+          {/* Your Lists — private */}
+          <View style={styles.sectionHead}>
+            <Text style={styles.sectionTitle}>Your Lists</Text>
+            <Text style={styles.sectionSub}>saved on this device · just for you</Text>
+          </View>
+          <View style={gridStyle}>
+            {/* Create-your-own card always first */}
+            <PressableScale
+              onPress={() => router.push('/create/category')}
+              scaleTo={0.97}
+              style={{ width: layout.cardWidth }}
+            >
+              <View style={styles.createCard}>
+                <Text style={styles.createPlus}>＋</Text>
+                <Text style={styles.createTitle}>Rank your own</Text>
+                <Text style={styles.createSub}>Search anything, build a board, keep it private.</Text>
+              </View>
+            </PressableScale>
+
+            {yours.map((list, i) => {
+              const strips: Strip[] = list.tiers.map((t) => ({ color: t.color, weight: t.itemIds.length }));
+              const total = list.tiers.reduce((n, t) => n + t.itemIds.length, 0) + list.unrankedIds.length;
+              return (
+                <GridListCard
+                  key={list.id}
+                  title={list.title}
+                  subtitle={`${total} item${total === 1 ? '' : 's'} · ${relativeTime(list.updatedAt)}`}
+                  glyph={CAT_GLYPH[list.category]}
+                  accent={CATEGORY_ACCENTS[list.category]}
+                  strips={strips}
+                  badge="Yours"
+                  heroUri={userHeroUri(list)}
+                  width={layout.cardWidth}
+                  index={i}
+                  onPress={() => router.push(`/board/${list.id}`)}
+                  onLongPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                    setSheetFor(list);
+                  }}
+                />
+              );
+            })}
+          </View>
+        </View>
+      </ScrollView>
+
       <FAB onPress={() => router.push('/create/category')} />
+
       <ActionSheet
         visible={sheetFor != null}
         title={sheetFor?.title}
@@ -95,17 +327,8 @@ export default function HomeScreen() {
                     if (copy) toast(`Duplicated as "${copy.title}"`);
                   },
                 },
-                {
-                  label: 'Export as image',
-                  icon: '📤',
-                  onPress: () => router.push(`/export/${sheetFor.id}`),
-                },
-                {
-                  label: 'Delete',
-                  icon: '🗑️',
-                  destructive: true,
-                  onPress: () => handleDelete(sheetFor),
-                },
+                { label: 'Export as image', icon: '📤', onPress: () => router.push(`/export/${sheetFor.id}`) },
+                { label: 'Delete', icon: '🗑️', destructive: true, onPress: () => handleDelete(sheetFor) },
               ]
             : []
         }
@@ -116,16 +339,99 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
-  header: { marginBottom: spacing.xl },
-  title: {
-    fontFamily: fonts.display,
-    fontSize: type.display,
-    color: colors.textHi,
+  headerRow: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: spacing.lg },
+  title: { fontFamily: fonts.display, fontSize: type.display, color: colors.textHi },
+  tagline: { fontFamily: fonts.body, fontSize: type.body, color: colors.textMid, marginTop: 4 },
+  dice: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.surfaceBorder,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  tagline: {
-    fontFamily: fonts.body,
+  diceText: { fontSize: 20 },
+  searchRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.md },
+  searchIcon: { fontSize: 15, marginRight: spacing.sm },
+  searchInput: {
+    flex: 1,
+    fontFamily: fonts.bodyMedium,
     fontSize: type.body,
+    color: colors.textHi,
+    paddingVertical: spacing.md + 2,
+  },
+  clearBtn: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  clearText: { color: colors.textMid, fontSize: 12 },
+  chip: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs + 3,
+    borderRadius: radii.pill,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.surfaceBorder,
+  },
+  chipText: { fontFamily: fonts.bodySemiBold, fontSize: type.micro + 1, color: colors.textMid },
+  showAll: {
+    alignSelf: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm + 2,
+    borderRadius: radii.pill,
+    backgroundColor: withAlpha(colors.brandA, 0.12),
+    borderWidth: 1,
+    borderColor: withAlpha(colors.brandA, 0.35),
+  },
+  showAllText: {
+    fontFamily: fonts.bodySemiBold,
+    fontSize: type.caption,
+    color: '#B9A5FF',
+  },
+  sectionHead: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+    marginBottom: spacing.md,
+  },
+  sectionTitle: { fontFamily: fonts.displayMedium, fontSize: type.title, color: colors.textHi },
+  sectionSub: { fontFamily: fonts.body, fontSize: type.micro + 1, color: colors.textLow },
+  noResults: {
+    fontFamily: fonts.body,
+    fontSize: type.caption,
     color: colors.textMid,
+    marginBottom: spacing.xxl,
+    lineHeight: 20,
+  },
+  createCard: {
+    height: 168,
+    borderRadius: radii.panel,
+    borderWidth: 1.5,
+    borderColor: withAlpha(colors.brandA, 0.4),
+    borderStyle: 'dashed',
+    backgroundColor: withAlpha(colors.brandA, 0.06),
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.lg,
+  },
+  createPlus: { fontFamily: fonts.display, fontSize: 34, color: '#B9A5FF' },
+  createTitle: {
+    fontFamily: fonts.displayMedium,
+    fontSize: type.heading,
+    color: colors.textHi,
+    marginTop: spacing.xs,
+  },
+  createSub: {
+    fontFamily: fonts.body,
+    fontSize: type.caption,
+    color: colors.textMid,
+    textAlign: 'center',
     marginTop: 4,
   },
 });

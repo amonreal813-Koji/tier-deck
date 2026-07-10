@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import type { TierItem } from '@/data/types';
@@ -31,8 +31,9 @@ function initials(name: string): string {
  */
 export function ItemThumb({ item, size = 64, radius = 12 }: ItemThumbProps) {
   const accent = CATEGORY_ACCENTS[item.category] ?? '#7C5CFF';
+  const [failed, setFailed] = useState(false);
 
-  if (!item.imageUrl) {
+  if (!item.imageUrl || failed) {
     return (
       <LinearGradient
         colors={[withAlpha(accent, 0.55), withAlpha(accent, 0.2)]}
@@ -54,6 +55,7 @@ export function ItemThumb({ item, size = 64, radius = 12 }: ItemThumbProps) {
         placeholder={{ blurhash: BLURHASH }}
         transition={200}
         cachePolicy="disk"
+        onError={() => setFailed(true)}
       />
     </View>
   );

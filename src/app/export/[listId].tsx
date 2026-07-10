@@ -1,9 +1,7 @@
 import * as Haptics from 'expo-haptics';
-import * as MediaLibrary from 'expo-media-library';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import * as Sharing from 'expo-sharing';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
   Easing,
@@ -15,50 +13,17 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { captureRef } from 'react-native-view-shot';
 
+import { ConfettiBurst } from '@/components/Confetti';
 import { PressableScale } from '@/components/PressableScale';
 import { useToast } from '@/components/Toast';
 import { ExportCanvas } from '@/features/export/ExportCanvas';
 import { useListsStore } from '@/store/useListsStore';
-import { DEFAULT_TIERS } from '@/theme/tierColors';
 import { colors, fonts, radii, spacing, springs, type } from '@/theme/tokens';
+import { buildShareUrl } from '@/utils/share';
 
 const SCREEN_W = Dimensions.get('window').width;
 const CANVAS_W = Math.min(SCREEN_W - spacing.lg * 2, 400);
-
-/** Eight tier-colored dots springing outward — the success moment. */
-function ConfettiBurst({ nonce }: { nonce: number }) {
-  if (nonce === 0) return null;
-  return (
-    <View pointerEvents="none" style={styles.confettiWrap}>
-      {Array.from({ length: 8 }).map((_, i) => (
-        <ConfettiDot key={`${nonce}-${i}`} index={i} />
-      ))}
-    </View>
-  );
-}
-
-function ConfettiDot({ index }: { index: number }) {
-  const t = useSharedValue(0);
-  const color = DEFAULT_TIERS[index % DEFAULT_TIERS.length].color;
-  const angle = (index / 8) * Math.PI * 2 + 0.4;
-
-  useEffect(() => {
-    t.value = withDelay(index * 25, withTiming(1, { duration: 700, easing: Easing.out(Easing.cubic) }));
-  }, [index, t]);
-
-  const style = useAnimatedStyle(() => ({
-    opacity: 1 - t.value,
-    transform: [
-      { translateX: Math.cos(angle) * t.value * 90 },
-      { translateY: Math.sin(angle) * t.value * 90 },
-      { scale: 1 - t.value * 0.4 },
-    ],
-  }));
-
-  return <Animated.View style={[styles.confettiDot, { backgroundColor: color }, style]} />;
-}
 
 export default function ExportScreen() {
   const { listId } = useLocalSearchParams<{ listId: string }>();
@@ -105,6 +70,8 @@ export default function ExportScreen() {
 
   const capture = async (): Promise<string | null> => {
     try {
+      // Lazy require: view-shot is native-only and breaks web at import time.
+      const { captureRef } = require('react-native-view-shot') as typeof import('react-native-view-shot');
       return await captureRef(canvasRef, { format: 'png', quality: 1, result: 'tmpfile' });
     } catch {
       toast('Could not render the image. Try again.');
@@ -117,20 +84,45 @@ export default function ExportScreen() {
     setConfettiNonce((n) => n + 1);
   };
 
+  const isWeb = Platform.OS === 'web';
+
+  const handleCopyLink = async () => {
+    const url = buildShareUrl(list);
+    if (isWeb && typeof navigator !== 'undefined' && navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(url);
+        celebrate();
+        toast('Share link copied ✨');
+      } catch {
+        toast('Copy failed — long-press the address bar instead.');
+      }
+      return;
+    }
+    // Native: hand the link to the OS share sheet.
+    try {
+      const { Share } = require('react-native') as typeof import('react-native');
+      await Share.share({ message: url });
+    } catch {
+      toast('Could not open share sheet.');
+    }
+  };
+
   const handleShare = async () => {
-    if (busy) return;
+    if (busy || isWeb) return;
     setBusy(true);
     const uri = await capture();
     if (uri) {
       celebrate();
+      const Sharing = require('expo-sharing') as typeof import('expo-sharing');
       await Sharing.shareAsync(uri, { mimeType: 'image/png' }).catch(() => {});
     }
     setBusy(false);
   };
 
   const handleSave = async () => {
-    if (busy) return;
+    if (busy || isWeb) return;
     setBusy(true);
+    const MediaLibrary = require('expo-media-library') as typeof import('expo-media-library');
     const perm = await MediaLibrary.requestPermissionsAsync();
     if (!perm.granted) {
       toast('Photo access needed to save. Enable it in Settings.');
@@ -180,27 +172,49 @@ export default function ExportScreen() {
       <ConfettiBurst nonce={confettiNonce} />
 
       <View style={[styles.actions, { paddingBottom: insets.bottom + spacing.lg }]}>
-        <PressableScale
-          onPress={handleSave}
-          style={[styles.secondaryBtn, (!ready || busy) && styles.btnDisabled]}
-          disabled={!ready || busy}
-        >
-          <Text style={styles.secondaryText}>Save to Photos</Text>
-        </PressableScale>
-        <PressableScale
-          onPress={handleShare}
-          disabled={!ready || busy}
-          style={[{ flex: 1 }, (!ready || busy) && styles.btnDisabled]}
-        >
-          <LinearGradient
-            colors={[colors.brandA, colors.brandB]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.primaryBtn}
-          >
-            <Text style={styles.primaryText}>{busy ? 'Working…' : 'Share'}</Text>
-          </LinearGradient>
-        </PressableScale>
+        {isWeb ? (
+          <PressableScale onPress={handleCopyLink} style={{ flex: 1 }}>
+            <LinearGradient
+              colors={[colors.brandA, colors.brandB]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.primaryBtn}
+            >
+              <Text style={styles.primaryText}>Copy share link</Text>
+            </LinearGradient>
+          </PressableScale>
+        ) : (
+          <>
+            <PressableScale
+              onPress={handleCopyLink}
+              style={[styles.secondaryBtn, busy && styles.btnDisabled]}
+              disabled={busy}
+            >
+              <Text style={styles.secondaryText}>Copy link</Text>
+            </PressableScale>
+            <PressableScale
+              onPress={handleSave}
+              style={[styles.secondaryBtn, (!ready || busy) && styles.btnDisabled]}
+              disabled={!ready || busy}
+            >
+              <Text style={styles.secondaryText}>Save</Text>
+            </PressableScale>
+            <PressableScale
+              onPress={handleShare}
+              disabled={!ready || busy}
+              style={[{ flex: 1 }, (!ready || busy) && styles.btnDisabled]}
+            >
+              <LinearGradient
+                colors={[colors.brandA, colors.brandB]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.primaryBtn}
+              >
+                <Text style={styles.primaryText}>{busy ? 'Working…' : 'Share'}</Text>
+              </LinearGradient>
+            </PressableScale>
+          </>
+        )}
       </View>
     </View>
   );
@@ -249,21 +263,6 @@ const styles = StyleSheet.create({
     color: colors.textLow,
     marginTop: spacing.md,
   },
-  confettiWrap: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  confettiDot: {
-    position: 'absolute',
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
   actions: {
     flexDirection: 'row',
     gap: spacing.md,
@@ -271,6 +270,14 @@ const styles = StyleSheet.create({
     paddingTop: spacing.sm,
   },
   btnDisabled: { opacity: 0.45 },
+  webNote: {
+    flex: 1,
+    textAlign: 'center',
+    fontFamily: fonts.body,
+    fontSize: type.caption,
+    color: colors.textMid,
+    paddingVertical: spacing.md,
+  },
   secondaryBtn: {
     paddingHorizontal: spacing.lg,
     justifyContent: 'center',

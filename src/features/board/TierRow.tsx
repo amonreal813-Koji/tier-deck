@@ -27,6 +27,8 @@ interface TierRowProps {
   /** True while some card is tap-selected — the chip pulses as a drop target. */
   placing: boolean;
   selectedItemId: string | null;
+  /** null = no board search; otherwise ids to keep bright. */
+  matchIds?: Set<string> | null;
   onChipTap: () => void;
   onChipLongPress: () => void;
   onItemTap: (item: TierItem) => void;
@@ -37,6 +39,7 @@ export function TierRow({
   items,
   placing,
   selectedItemId,
+  matchIds,
   onChipTap,
   onChipLongPress,
   onItemTap,
@@ -80,6 +83,8 @@ export function TierRow({
 
   return (
     <Animated.View
+      // Web drag hit-tests against this id via elementFromPoint.
+      nativeID={`zone-${tier.id}`}
       layout={LinearTransition.springify()
         .damping(springs.gentle.damping)
         .stiffness(springs.gentle.stiffness)}
@@ -115,6 +120,7 @@ export function TierRow({
               key={item.id}
               item={item}
               selected={selectedItemId === item.id}
+              dimmed={matchIds ? !matchIds.has(item.id) : false}
               onTap={() => onItemTap(item)}
             />
           ))}

@@ -13,18 +13,18 @@ Rank absolutely everything. A universal tier-list phone app that pulls real data
 3. Scan the QR code in the terminal with your phone (camera app on iPhone, Expo Go on Android). Phone and computer must be on the same Wi-Fi.
    - If it can't connect (firewall / router isolation), use `npx expo start --tunnel` instead.
 
-## API keys
+## Configuration (`.env`)
 
-Three of the four categories work with zero setup. For **video games**:
+All configuration lives in a `.env` file. **See [`.env.example`](.env.example)** — it's the annotated, fill-in-the-blanks template listing every variable (search keys **and** affiliate tags), what each does, and where to get it.
 
-1. Get a free key (about 1 minute): https://rawg.io/apidocs
-2. Put it in `.env`:
-   ```
-   EXPO_PUBLIC_RAWG_KEY=your_key_here
-   ```
-3. Restart `npx expo start`.
+```bash
+cp .env.example .env   # then fill in what you have, and restart `npx expo start`
+```
 
-Optional: a TMDB key (`EXPO_PUBLIC_TMDB_KEY`, from themoviedb.org) upgrades Movies & TV with full TV-show coverage. Without it the app quietly uses iTunes movie search instead.
+Everything is optional — the app runs with all blanks. Two groups:
+
+- **Data keys** (richer search): `EXPO_PUBLIC_RAWG_KEY` (games, free from rawg.io), `EXPO_PUBLIC_TMDB_KEY` (TV coverage, free from themoviedb.org). Without them the app falls back to Wikipedia / iTunes.
+- **💰 Affiliate tags** (earn commission on "Shop" links): `EXPO_PUBLIC_AMAZON_TAG` is the one to start with — grab it from [Amazon Associates](https://affiliate-program.amazon.com). Best Buy / Sephora / Chewy tags are optional add-ons. Links work without a tag; they just don't pay until it's set. For the SEO site, the same tag goes in the host's env as `AMAZON_TAG` (see [`SEO_DEPLOY.md`](SEO_DEPLOY.md)).
 
 | Category | Source | Key needed? |
 |---|---|---|

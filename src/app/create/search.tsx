@@ -44,6 +44,18 @@ const ERROR_COPY: Record<SearchErrorKind, string> = {
   ratelimit: 'Catching our breath — try again in a moment.',
 };
 
+/** One-tap starting points per category, so a blank search never stalls you. */
+const SUGGESTIONS: Record<Category, string[]> = {
+  games: ['Zelda', 'Elden Ring', 'Mario', 'Minecraft', 'God of War', 'Halo'],
+  movies: ['Inception', 'The Matrix', 'Parasite', 'Interstellar', 'Spider-Man'],
+  food: ['Pizza', 'Tacos', 'Sushi', 'Burger', 'Ramen', 'Ice cream'],
+  music: ['Kendrick Lamar', 'Taylor Swift', 'The Beatles', 'Drake', 'Beyoncé'],
+  books: ['Harry Potter', '1984', 'Dune', 'The Hobbit', 'Percy Jackson'],
+  anime: ['One Piece', 'Naruto', 'Attack on Titan', 'Death Note', 'Jujutsu Kaisen'],
+  sports: ['Messi', 'LeBron', 'Ronaldo', 'Serena Williams', 'Tom Brady'],
+  anything: ['Dog breeds', 'Planets', 'Countries', 'US Presidents', 'Marvel heroes'],
+};
+
 function ResultCard({
   item,
   staged,
@@ -132,6 +144,12 @@ export default function SearchScreen() {
 
   useEffect(() => () => abortRef.current?.abort(), []);
 
+  const pickSuggestion = (s: string) => {
+    Haptics.selectionAsync();
+    setQuery(s);
+    runSearch(s);
+  };
+
   const toggleStage = (item: TierItem) => {
     Haptics.selectionAsync();
     setStaged((s) => {
@@ -170,10 +188,19 @@ export default function SearchScreen() {
     switch (state.status) {
       case 'idle':
         return (
-          <Animated.View entering={FadeIn.duration(300)} style={styles.centerFill}>
+          <Animated.View entering={FadeIn.duration(300)} style={styles.idleFill}>
             <Text style={styles.bigGlyph}>{adapter.glyph}</Text>
             <Text style={styles.stateTitle}>Search {adapter.label.toLowerCase()}</Text>
-            <Text style={styles.stateSub}>Everything you pick lands in the tray below.</Text>
+            <Text style={styles.stateSub}>Tap one to start, or search anything:</Text>
+            <View style={styles.suggestRow}>
+              {(SUGGESTIONS[adapter.category] ?? []).map((s, i) => (
+                <Animated.View key={s} entering={FadeInDown.delay(60 + i * 45).springify()}>
+                  <PressableScale onPress={() => pickSuggestion(s)} style={styles.suggestChip}>
+                    <Text style={styles.suggestChipText}>{s}</Text>
+                  </PressableScale>
+                </Animated.View>
+              ))}
+            </View>
           </Animated.View>
         );
       case 'loading':
@@ -322,7 +349,7 @@ export default function SearchScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
-  content: { flex: 1, paddingHorizontal: spacing.lg },
+  content: { flex: 1, paddingHorizontal: spacing.lg, width: '100%', maxWidth: 820, alignSelf: 'center' },
   topRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -364,6 +391,35 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingBottom: 120,
     gap: 6,
+  },
+  idleFill: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 100,
+    paddingHorizontal: spacing.lg,
+    gap: 6,
+  },
+  suggestRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    marginTop: spacing.lg,
+    maxWidth: 420,
+  },
+  suggestChip: {
+    paddingHorizontal: spacing.md + 2,
+    paddingVertical: spacing.sm + 1,
+    borderRadius: radii.pill,
+    backgroundColor: withAlpha('#7C5CFF', 0.14),
+    borderWidth: 1,
+    borderColor: withAlpha('#7C5CFF', 0.4),
+  },
+  suggestChipText: {
+    fontFamily: fonts.bodySemiBold,
+    fontSize: type.caption,
+    color: '#B9A5FF',
   },
   bigGlyph: { fontSize: 44, marginBottom: spacing.sm },
   stateTitle: {

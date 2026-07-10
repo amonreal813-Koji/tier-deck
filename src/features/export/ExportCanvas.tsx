@@ -81,7 +81,7 @@ export function ExportCanvas({ list, width, onImageSettled }: ExportCanvasProps)
             <View key={t.id} style={[styles.footerBar, { backgroundColor: t.color }]} />
           ))}
         </View>
-        <Text style={styles.watermark}>made with Tier Deck</Text>
+        <Text style={styles.watermark}>◆ made with Tier Deck</Text>
       </View>
     </View>
   );
@@ -161,9 +161,9 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   watermark: {
-    fontFamily: fonts.bodyMedium,
+    fontFamily: fonts.bodySemiBold,
     fontSize: 10,
-    color: colors.textLow,
+    color: colors.textMid,
     letterSpacing: 0.5,
   },
 });

@@ -112,8 +112,43 @@ export default function CategoryScreen() {
           Rank what?
         </Animated.Text>
         <Animated.Text entering={FadeInDown.delay(40).springify()} style={styles.subtitle}>
-          Pick a universe to pull from.
+          Start from scratch, or pull from a universe.
         </Animated.Text>
+
+        <Animated.View entering={FadeInDown.delay(50).springify()}>
+          <PressableScale onPress={() => router.push('/create/topic')} style={{ marginBottom: spacing.md }}>
+            <GlassPanel radius={18} tint={withAlpha('#4ADE80', 0.1)}>
+              <View style={styles.blankRow}>
+                <View style={[styles.blankGlyph, { backgroundColor: withAlpha('#4ADE80', 0.16), borderColor: withAlpha('#4ADE80', 0.4) }]}>
+                  <Text style={{ fontSize: 22 }}>🔎</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.blankTitle}>Rank a topic</Text>
+                  <Text style={styles.blankSub}>Search a game or show — we pull its characters, episodes & more.</Text>
+                </View>
+                <Text style={[styles.blankArrow, { color: '#8BF0B0' }]}>→</Text>
+              </View>
+            </GlassPanel>
+          </PressableScale>
+        </Animated.View>
+
+        <Animated.View entering={FadeInDown.delay(55).springify()}>
+          <PressableScale onPress={() => router.push('/create/custom')} style={{ marginBottom: spacing.lg }}>
+            <GlassPanel radius={18} tint={withAlpha('#7C5CFF', 0.1)}>
+              <View style={styles.blankRow}>
+                <View style={styles.blankGlyph}>
+                  <Text style={{ fontSize: 22 }}>✏️</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.blankTitle}>Start from scratch</Text>
+                  <Text style={styles.blankSub}>Name it anything, add any items, rank it your way.</Text>
+                </View>
+                <Text style={styles.blankArrow}>→</Text>
+              </View>
+            </GlassPanel>
+          </PressableScale>
+        </Animated.View>
+
         <View style={styles.grid}>
           {categories.map((adapter, i) => (
             <CategoryCard key={adapter.category} adapter={adapter} index={i} />
@@ -126,7 +161,7 @@ export default function CategoryScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
-  content: { flex: 1, paddingHorizontal: spacing.lg },
+  content: { flex: 1, paddingHorizontal: spacing.lg, width: '100%', maxWidth: 760, alignSelf: 'center' },
   back: {
     width: 40,
     height: 40,
@@ -155,6 +190,38 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.md,
+  },
+  blankRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    padding: spacing.lg,
+  },
+  blankGlyph: {
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: withAlpha('#7C5CFF', 0.16),
+    borderWidth: 1,
+    borderColor: withAlpha('#7C5CFF', 0.4),
+  },
+  blankTitle: {
+    fontFamily: fonts.displayMedium,
+    fontSize: type.heading,
+    color: colors.textHi,
+  },
+  blankSub: {
+    fontFamily: fonts.body,
+    fontSize: type.caption,
+    color: colors.textMid,
+    marginTop: 2,
+  },
+  blankArrow: {
+    fontFamily: fonts.display,
+    fontSize: 20,
+    color: '#B9A5FF',
   },
   cardWrap: {
     width: '48%',

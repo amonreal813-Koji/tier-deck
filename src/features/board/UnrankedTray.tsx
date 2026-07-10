@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, {
   Easing,
   interpolateColor,
@@ -26,6 +26,7 @@ interface UnrankedTrayProps {
   items: TierItem[];
   placing: boolean;
   selectedItemId: string | null;
+  matchIds?: Set<string> | null;
   onZoneTap: () => void;
   onItemTap: (item: TierItem) => void;
   onAddItems: () => void;
@@ -36,6 +37,7 @@ export function UnrankedTray({
   items,
   placing,
   selectedItemId,
+  matchIds,
   onZoneTap,
   onItemTap,
   onAddItems,
@@ -67,7 +69,18 @@ export function UnrankedTray({
 
   const measureZone = () => {
     // The tray is pinned outside the board scroll → window-space zone.
-    shellRef.current?.measureInWindow((_x, y, _w, h) => {
+    const el = shellRef.current as unknown as {
+      measureInWindow?: (cb: (x: number, y: number, w: number, h: number) => void) => void;
+      getBoundingClientRect?: () => { top: number; height: number };
+    } | null;
+    if (Platform.OS === 'web') {
+      const r = el?.getBoundingClientRect?.();
+      if (r && r.height > 0) {
+        drag.registerZone(UNRANKED_ZONE, { y: r.top, height: r.height, inScroll: false });
+      }
+      return;
+    }
+    el?.measureInWindow?.((_x, y, _w, h) => {
       if (typeof y === 'number' && typeof h === 'number' && h > 0) {
         drag.registerZone(UNRANKED_ZONE, { y, height: h, inScroll: false });
       }
@@ -76,9 +89,26 @@ export function UnrankedTray({
 
   const { unregisterZone } = drag;
   useEffect(() => () => unregisterZone(UNRANKED_ZONE), [unregisterZone]);
+  // Web: onLayout may fire before the DOM node settles; re-measure after mount
+  // and on window resize so the tray zone stays correct.
+  useEffect(() => {
+    if (Platform.OS !== 'web') return;
+    const t = setTimeout(measureZone, 300);
+    window.addEventListener('resize', measureZone);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener('resize', measureZone);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <Animated.View ref={shellRef as never} onLayout={measureZone} style={[styles.shell, glowStyle]}>
+    <Animated.View
+      ref={shellRef as never}
+      nativeID={`zone-${UNRANKED_ZONE}`}
+      onLayout={measureZone}
+      style={[styles.shell, glowStyle]}
+    >
       <GlassPanel radius={22} style={StyleSheet.absoluteFill} />
       <View style={styles.inner}>
         <View style={styles.headerRow}>
@@ -113,6 +143,7 @@ export function UnrankedTray({
                 key={item.id}
                 item={item}
                 selected={selectedItemId === item.id}
+                dimmed={matchIds ? !matchIds.has(item.id) : false}
                 onTap={() => onItemTap(item)}
               />
             ))}

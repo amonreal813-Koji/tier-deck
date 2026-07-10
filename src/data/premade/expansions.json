@@ -1,0 +1,1320 @@
+[
+  {
+    "listId": "iconic-games",
+    "additions": [
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "chrono-trigger",
+          "name": "Chrono Trigger",
+          "reasoning": "Routinely ranked among the greatest RPGs of all time and topped multiple Famitsu all-time reader polls; its 1995 SNES release is a landmark, and the DS re-release holds a 92 on Metacritic.",
+          "subtitle": "1995 / Square / JRPG",
+          "art": {
+            "type": "wiki",
+            "title": "Chrono Trigger"
+          }
+        }
+      },
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "sanandreas",
+          "name": "Grand Theft Auto: San Andreas",
+          "reasoning": "Holds a 95 Metacritic score and is the best-selling PlayStation 2 game with over 27 million copies sold, long cited among the greatest games ever made.",
+          "subtitle": "2004 / Rockstar / Action",
+          "art": {
+            "type": "wiki",
+            "title": "Grand Theft Auto: San Andreas"
+          }
+        }
+      },
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "gow2018",
+          "name": "God of War (2018)",
+          "reasoning": "Won The Game Awards 2018 Game of the Year and holds a 94 Metacritic score, praised for reinventing the franchise, with over 23 million copies sold.",
+          "subtitle": "2018 / Santa Monica / Action",
+          "art": {
+            "type": "wiki",
+            "title": "God of War (2018 video game)"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "darksouls",
+          "name": "Dark Souls",
+          "reasoning": "Codified and popularized the 'Soulslike' genre and holds an 89 Metacritic score, routinely appearing on greatest-games lists for its influential difficulty and interconnected world design.",
+          "subtitle": "2011 / FromSoftware / Action RPG",
+          "art": {
+            "type": "wiki",
+            "title": "Dark Souls (video game)"
+          }
+        }
+      },
+      {
+        "tierLabel": "F",
+        "item": {
+          "id": "sonic06",
+          "name": "Sonic the Hedgehog (2006)",
+          "reasoning": "Widely regarded as one of the worst entries in a major franchise, holding a 46 Metacritic score and infamous for game-breaking bugs and broken physics at launch.",
+          "subtitle": "2006 / Sonic Team / Platformer",
+          "art": {
+            "type": "wiki",
+            "title": "Sonic the Hedgehog (2006 video game)"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "listId": "game-consoles",
+    "additions": [
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "ps1",
+          "name": "PlayStation",
+          "subtitle": "1994 / Sony",
+          "reasoning": "The original PlayStation was the first home console to ship over 100 million units and drove the industry's shift to 3D graphics on CD-ROM media.",
+          "art": {
+            "type": "wiki",
+            "title": "PlayStation (console)"
+          }
+        }
+      },
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "ps5",
+          "name": "PlayStation 5",
+          "subtitle": "2020 / Sony",
+          "reasoning": "The PS5 is the best-selling ninth-generation home console, surpassing 65 million units within roughly three years of its 2020 launch.",
+          "art": {
+            "type": "wiki",
+            "title": "PlayStation 5"
+          }
+        }
+      },
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "nintendo-ds",
+          "name": "Nintendo DS",
+          "subtitle": "2004 / Nintendo",
+          "reasoning": "With over 154 million units sold, the Nintendo DS family is one of the best-selling gaming platforms of all time, second only to the PlayStation 2 among dedicated game systems.",
+          "art": {
+            "type": "wiki",
+            "title": "Nintendo DS"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "nes",
+          "name": "Nintendo Entertainment System",
+          "subtitle": "1985 / Nintendo",
+          "reasoning": "The NES revived the North American video game market after the 1983 crash and sold roughly 62 million units worldwide, establishing Nintendo's industry dominance.",
+          "art": {
+            "type": "wiki",
+            "title": "Nintendo Entertainment System"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "n64",
+          "name": "Nintendo 64",
+          "subtitle": "1996 / Nintendo",
+          "reasoning": "The Nintendo 64 popularized the analog control stick for 3D movement and launched critically acclaimed genre-definers like Super Mario 64 and The Legend of Zelda: Ocarina of Time.",
+          "art": {
+            "type": "wiki",
+            "title": "Nintendo 64"
+          }
+        }
+      },
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "sega-genesis",
+          "name": "Sega Genesis",
+          "subtitle": "1988 / Sega",
+          "reasoning": "The Sega Genesis sold roughly 30-35 million units and, led by Sonic the Hedgehog and aggressive marketing, made the 16-bit console war genuinely competitive against Nintendo.",
+          "art": {
+            "type": "wiki",
+            "title": "Sega Genesis"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "listId": "iconic-movies",
+    "additions": [
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "lotr-return-king",
+          "name": "The Lord of the Rings: The Return of the King",
+          "reasoning": "Won all 11 Academy Awards it was nominated for in 2004, including Best Picture, tying Ben-Hur and Titanic for the most Oscars ever won by a single film.",
+          "subtitle": "2003 / Peter Jackson / epic fantasy",
+          "art": {
+            "type": "wiki",
+            "title": "The Lord of the Rings: The Return of the King"
+          }
+        }
+      },
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "goodfellas",
+          "name": "Goodfellas",
+          "reasoning": "Holds a 95%+ critics score on Rotten Tomatoes and was selected for preservation in the U.S. National Film Registry as a landmark of the gangster genre.",
+          "subtitle": "1990 / Martin Scorsese / crime",
+          "art": {
+            "type": "wiki",
+            "title": "Goodfellas"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "forrest-gump",
+          "name": "Forrest Gump",
+          "reasoning": "Won six Academy Awards including Best Picture, Best Director, and Best Actor, and grossed over $678 million worldwide to become a defining cultural touchstone of the 1990s.",
+          "subtitle": "1994 / Robert Zemeckis / drama",
+          "art": {
+            "type": "wiki",
+            "title": "Forrest Gump"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "inception",
+          "name": "Inception",
+          "reasoning": "Won four Academy Awards, grossed over $836 million worldwide, and ranks among IMDb's Top 20 highest-rated films by user vote.",
+          "subtitle": "2010 / Christopher Nolan / sci-fi",
+          "art": {
+            "type": "wiki",
+            "title": "Inception"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "interstellar",
+          "name": "Interstellar",
+          "reasoning": "Won the Academy Award for Best Visual Effects and grossed over $730 million worldwide, ranking among IMDb's Top 30 films by user rating.",
+          "subtitle": "2014 / Christopher Nolan / sci-fi",
+          "art": {
+            "type": "wiki",
+            "title": "Interstellar (film)"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "fight-club",
+          "name": "Fight Club",
+          "reasoning": "Ranks in IMDb's Top 15 films of all time by user rating and grew from a box-office underperformer into one of the most influential cult classics in cinema.",
+          "subtitle": "1999 / David Fincher / drama",
+          "art": {
+            "type": "wiki",
+            "title": "Fight Club"
+          }
+        }
+      },
+      {
+        "tierLabel": "F",
+        "item": {
+          "id": "last-airbender",
+          "name": "The Last Airbender",
+          "reasoning": "Holds a 5% critics score on Rotten Tomatoes and won multiple Razzie Awards including Worst Picture and Worst Director for M. Night Shyamalan.",
+          "subtitle": "2010 / M. Night Shyamalan / fantasy",
+          "art": {
+            "type": "wiki",
+            "title": "The Last Airbender"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "listId": "iconic-tv",
+    "additions": [
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "seinfeld",
+          "name": "Seinfeld",
+          "reasoning": "TV Guide's 2002 list of the 50 Greatest Shows of All Time ranked it #1, and its 1998 finale drew roughly 76 million viewers.",
+          "subtitle": "1989 NBC sitcom",
+          "art": {
+            "type": "wiki",
+            "title": "Seinfeld"
+          }
+        }
+      },
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "succession",
+          "name": "Succession",
+          "reasoning": "Won the Emmy for Outstanding Drama Series three times (2020, 2022, 2023) and holds a 90s% critics score on Rotten Tomatoes across its run.",
+          "subtitle": "2018 HBO drama",
+          "art": {
+            "type": "itunes",
+            "kind": "tvShow",
+            "term": "Succession"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "madmen",
+          "name": "Mad Men",
+          "reasoning": "Won the Emmy for Outstanding Drama Series four consecutive years (2008-2011), one of only a handful of shows ever to do so.",
+          "subtitle": "2007 AMC drama",
+          "art": {
+            "type": "wiki",
+            "title": "Mad Men"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "thelastofus",
+          "name": "The Last of Us",
+          "reasoning": "HBO's 2023 adaptation earned 24 Emmy nominations for its first season and became one of HBO's most-watched series debuts.",
+          "subtitle": "2023 HBO drama",
+          "art": {
+            "type": "wiki",
+            "title": "The Last of Us Part I"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "truedetective",
+          "name": "True Detective",
+          "reasoning": "Its 2014 first season with Matthew McConaughey and Woody Harrelson earned 12 Emmy nominations (winning 5) and was a landmark of prestige TV.",
+          "subtitle": "2014 HBO anthology",
+          "art": {
+            "type": "wiki",
+            "title": "True Detective"
+          }
+        }
+      },
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "friends",
+          "name": "Friends",
+          "reasoning": "A ratings juggernaut whose 2004 finale drew roughly 52.5 million viewers, though critics rank it below the era's prestige dramas.",
+          "subtitle": "1994 NBC sitcom",
+          "art": {
+            "type": "itunes",
+            "kind": "tvShow",
+            "term": "Friends"
+          }
+        }
+      },
+      {
+        "tierLabel": "F",
+        "item": {
+          "id": "cavemen",
+          "name": "Cavemen",
+          "reasoning": "Based on GEICO ad characters, it was cancelled during its first season after only a handful of episodes aired and is routinely cited among the worst TV shows ever.",
+          "subtitle": "2007 ABC sitcom",
+          "art": {
+            "type": "wiki",
+            "title": "Cavemen (TV series)"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "listId": "pixar-ranked",
+    "additions": [
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "toystory3",
+          "name": "Toy Story 3",
+          "reasoning": "Holds a 98% Rotten Tomatoes score, won the Academy Award for Best Animated Feature, earned a rare Best Picture nomination, and grossed over $1.06 billion worldwide, widely cited as one of the greatest animated films ever made.",
+          "subtitle": "2010 / Pixar",
+          "art": {
+            "type": "wiki",
+            "title": "Toy Story 3"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "ratatouille",
+          "name": "Ratatouille",
+          "reasoning": "Carries a 96% Rotten Tomatoes rating and won the Academy Award for Best Animated Feature, consistently ranked among Pixar's finest and most beloved films by critics.",
+          "subtitle": "2007 / Pixar",
+          "art": {
+            "type": "wiki",
+            "title": "Ratatouille (film)"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "incredibles",
+          "name": "The Incredibles",
+          "reasoning": "Scored 97% on Rotten Tomatoes and won the Academy Award for Best Animated Feature, celebrated as one of the best superhero films of its era.",
+          "subtitle": "2004 / Pixar",
+          "art": {
+            "type": "wiki",
+            "title": "The Incredibles"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "soul",
+          "name": "Soul",
+          "reasoning": "Won both the Academy Award for Best Animated Feature and Best Original Score, holding a 95% Rotten Tomatoes rating as one of Pixar's most acclaimed recent films.",
+          "subtitle": "2020 / Pixar",
+          "art": {
+            "type": "wiki",
+            "title": "Soul (2020 film)"
+          }
+        }
+      },
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "findingdory",
+          "name": "Finding Dory",
+          "reasoning": "Holds a 94% Rotten Tomatoes rating and grossed over $1.02 billion worldwide, a strong and popular sequel though generally rated a notch below Pixar's top-tier originals.",
+          "subtitle": "2016 / Pixar",
+          "art": {
+            "type": "wiki",
+            "title": "Finding Dory"
+          }
+        }
+      },
+      {
+        "tierLabel": "C",
+        "item": {
+          "id": "onward",
+          "name": "Onward",
+          "reasoning": "Received an 88% Rotten Tomatoes rating but grossed only about $141M worldwide after its theatrical run was cut short by COVID-19 closures, widely regarded as solid but middle-of-the-pack Pixar.",
+          "subtitle": "2020 / Pixar",
+          "art": {
+            "type": "wiki",
+            "title": "Onward (film)"
+          }
+        }
+      },
+      {
+        "tierLabel": "F",
+        "item": {
+          "id": "lightyear",
+          "name": "Lightyear",
+          "reasoning": "Was a box-office bomb, grossing roughly $226M against a ~$200M budget for an estimated $106M loss, and holds only a 74% Rotten Tomatoes score, one of Pixar's weakest-received and least profitable major releases.",
+          "subtitle": "2022 / Pixar",
+          "art": {
+            "type": "wiki",
+            "title": "Lightyear (film)"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "listId": "iconic-albums",
+    "additions": [
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "pet-sounds",
+          "name": "Pet Sounds",
+          "subtitle": "The Beach Boys, 1966",
+          "reasoning": "Ranked #2 on Rolling Stone's 2020 revised list of the 500 Greatest Albums of All Time, and cited by Paul McCartney as a direct influence on Sgt. Pepper's.",
+          "art": {
+            "type": "itunes",
+            "kind": "album",
+            "term": "The Beach Boys Pet Sounds"
+          }
+        }
+      },
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "sgt-peppers",
+          "name": "Sgt. Pepper's Lonely Hearts Club Band",
+          "subtitle": "The Beatles, 1967",
+          "reasoning": "Won the 1968 Grammy Award for Album of the Year, the first rock LP ever to do so, and topped Rolling Stone's original 2003 list of the 500 Greatest Albums.",
+          "art": {
+            "type": "itunes",
+            "kind": "album",
+            "term": "The Beatles Sgt. Pepper's Lonely Hearts Club Band"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "to-pimp-a-butterfly",
+          "name": "To Pimp a Butterfly",
+          "subtitle": "Kendrick Lamar, 2015",
+          "reasoning": "Ranked #19 on Rolling Stone's 2020 list of the 500 Greatest Albums of All Time and won the 2016 Grammy for Best Rap Album.",
+          "art": {
+            "type": "itunes",
+            "kind": "album",
+            "term": "Kendrick Lamar To Pimp a Butterfly"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "miseducation-lauryn-hill",
+          "name": "The Miseducation of Lauryn Hill",
+          "subtitle": "Lauryn Hill, 1998",
+          "reasoning": "Won the 1999 Grammy Award for Album of the Year, the first hip-hop-rooted album to win the category, and took five Grammys total that night.",
+          "art": {
+            "type": "itunes",
+            "kind": "album",
+            "term": "Lauryn Hill The Miseducation of Lauryn Hill"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "blonde-on-blonde",
+          "name": "Blonde on Blonde",
+          "subtitle": "Bob Dylan, 1966",
+          "reasoning": "Ranked #38 on Rolling Stone's 2020 list of the 500 Greatest Albums of All Time and inducted into the Grammy Hall of Fame in 1999.",
+          "art": {
+            "type": "itunes",
+            "kind": "album",
+            "term": "Bob Dylan Blonde on Blonde"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "back-to-black",
+          "name": "Back to Black",
+          "subtitle": "Amy Winehouse, 2006",
+          "reasoning": "Won five Grammy Awards in 2008, including Record and Song of the Year for 'Rehab,' and is one of the UK's best-selling albums of the 21st century.",
+          "art": {
+            "type": "itunes",
+            "kind": "album",
+            "term": "Amy Winehouse Back to Black"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "listId": "iconic-artists",
+    "additions": [
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "elvis-presley",
+          "name": "Elvis Presley",
+          "reasoning": "The 'King of Rock and Roll' is widely cited as the best-selling solo music artist in history and holds the RIAA record for most gold and platinum certifications by a solo act, having transformed popular music in the 1950s.",
+          "subtitle": "1954 / rock and roll",
+          "art": {
+            "type": "wiki",
+            "title": "Elvis Presley"
+          }
+        }
+      },
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "bob-dylan",
+          "name": "Bob Dylan",
+          "reasoning": "Dylan is the only songwriter awarded the Nobel Prize in Literature (2016) and tops Rolling Stone's greatest-songwriters ranking, reshaping popular music with 'Like a Rolling Stone' and 'Blowin' in the Wind'.",
+          "subtitle": "1961 / folk rock",
+          "art": {
+            "type": "wiki",
+            "title": "Bob Dylan"
+          }
+        }
+      },
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "prince-musician",
+          "name": "Prince",
+          "reasoning": "A Rock and Roll Hall of Fame inductee who won 7 Grammy Awards, an Academy Award for 'Purple Rain', and sold over 100 million records, Prince is routinely ranked among the greatest and most versatile musicians of all time.",
+          "subtitle": "1978 / funk pop",
+          "art": {
+            "type": "wiki",
+            "title": "Prince (musician)"
+          }
+        }
+      },
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "madonna",
+          "name": "Madonna",
+          "reasoning": "The 'Queen of Pop' is recognized by Guinness World Records as the best-selling female recording artist of all time, with over 300 million records sold and the highest-grossing touring female artist in history.",
+          "subtitle": "1982 / pop",
+          "art": {
+            "type": "wiki",
+            "title": "Madonna"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "stevie-wonder",
+          "name": "Stevie Wonder",
+          "reasoning": "Wonder has won 25 competitive Grammy Awards, among the most for any solo artist, and is a Rock and Roll Hall of Fame inductee whose 'Songs in the Key of Life' and 'Innervisions' are landmark albums.",
+          "subtitle": "1963 / soul",
+          "art": {
+            "type": "wiki",
+            "title": "Stevie Wonder"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "rihanna",
+          "name": "Rihanna",
+          "reasoning": "One of the best-selling music artists of all time with over 250 million records sold, Rihanna holds the RIAA record for the most Diamond-certified singles by any artist and has scored 14 US number-one hits.",
+          "subtitle": "2005 / pop R&B",
+          "art": {
+            "type": "wiki",
+            "title": "Rihanna"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "listId": "fast-food-chains",
+    "additions": [
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "whataburger",
+          "name": "Whataburger",
+          "subtitle": "1950 / Texas burgers",
+          "reasoning": "Texas-born chain with over 1,000 locations across the South; a cult regional favorite whose orange-and-white A-frame loyalty rivals In-N-Out's, and it regularly places near the top of national fast-food burger rankings.",
+          "art": {
+            "type": "logo",
+            "domain": "whataburger.com"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "shake-shack",
+          "name": "Shake Shack",
+          "subtitle": "2004 / premium burgers",
+          "reasoning": "Danny Meyer's fast-casual chain grew from a Madison Square Park cart into an NYSE-listed company (ticker SHAK) with 500+ locations, and its ShackBurger is frequently rated among America's best fast-food burgers.",
+          "art": {
+            "type": "logo",
+            "domain": "shakeshack.com"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "chipotle",
+          "name": "Chipotle",
+          "subtitle": "1993 / Mexican grill",
+          "reasoning": "Fast-casual leader with over 3,400 restaurants that consistently posts one of the highest ACSI scores among limited-service chains, with a market cap that has topped $80 billion.",
+          "art": {
+            "type": "logo",
+            "domain": "chipotle.com"
+          }
+        }
+      },
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "sonic",
+          "name": "Sonic Drive-In",
+          "subtitle": "1953 / drive-in",
+          "reasoning": "America's largest drive-in chain with roughly 3,500 locations, beloved for its half-price Happy Hour slushes and cherry limeades but generally rated a solid mid-tier pick in fast-food polls.",
+          "art": {
+            "type": "logo",
+            "domain": "sonicdrivein.com"
+          }
+        }
+      },
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "arbys",
+          "name": "Arby's",
+          "subtitle": "1964 / roast beef",
+          "reasoning": "Roast-beef specialist with about 3,400 US locations that built a devoted following on its 'We Have the Meats' campaign and Beef 'n Cheddar, landing firmly in the respectable middle of fast-food rankings.",
+          "art": {
+            "type": "logo",
+            "domain": "arbys.com"
+          }
+        }
+      },
+      {
+        "tierLabel": "C",
+        "item": {
+          "id": "kfc",
+          "name": "KFC",
+          "subtitle": "1952 / fried chicken",
+          "reasoning": "Colonel Sanders' Original Recipe made KFC a global icon with 25,000+ outlets worldwide, but its US reputation and traffic have sagged behind chicken rivals Chick-fil-A and Popeyes, leaving it a middling domestic pick.",
+          "art": {
+            "type": "logo",
+            "domain": "kfc.com"
+          }
+        }
+      },
+      {
+        "tierLabel": "C",
+        "item": {
+          "id": "jackinthebox",
+          "name": "Jack in the Box",
+          "subtitle": "1951 / burgers, tacos",
+          "reasoning": "West Coast late-night staple with about 2,200 locations known for its cult tacos and all-day menu, but inconsistent quality and a mixed reputation keep it in the lower-middle of consensus rankings.",
+          "art": {
+            "type": "logo",
+            "domain": "jackinthebox.com"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "listId": "pizza-toppings",
+    "additions": [
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "ham",
+          "name": "Ham",
+          "reasoning": "Ham anchors the Hawaiian pizza (ham and pineapple), one of the world's most recognized pizza varieties, and is a standard topping at Domino's and Pizza Hut worldwide; it consistently ranks among the top ordered meat toppings after pepperoni and sausage.",
+          "subtitle": "Cured pork",
+          "art": {
+            "type": "wiki",
+            "title": "Ham"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "chicken",
+          "name": "Chicken",
+          "reasoning": "Grilled and BBQ chicken pizzas are top sellers in the US; California Pizza Kitchen's Original BBQ Chicken Pizza is its signature best-selling dish, and chicken ranks as a leading premium topping in US ordering surveys.",
+          "subtitle": "Grilled poultry",
+          "art": {
+            "type": "wiki",
+            "title": "Chicken as food"
+          }
+        }
+      },
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "green-pepper",
+          "name": "Green Pepper",
+          "reasoning": "Green bell pepper is a standard vegetable topping at virtually every major chain and consistently ranks in the top 10 most-ordered US pizza toppings, typically the leading vegetable alongside onions and mushrooms.",
+          "subtitle": "Bell pepper",
+          "art": {
+            "type": "wiki",
+            "title": "Bell pepper"
+          }
+        }
+      },
+      {
+        "tierLabel": "C",
+        "item": {
+          "id": "spinach",
+          "name": "Spinach",
+          "reasoning": "Spinach is a niche topping tied to white and Florentine-style pizzas; national US surveys rank it well below staples like mushrooms, onions, and peppers, appealing mainly to a health-conscious minority.",
+          "subtitle": "Leafy green",
+          "art": {
+            "type": "wiki",
+            "title": "Spinach"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "listId": "candy-rankings",
+    "additions": [
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "starburst",
+          "name": "Starburst",
+          "reasoning": "Among the best-selling fruit chews in the US; its soft, juicy taffy squares and the popular FaveREDs (all-red) pack make it a perennial top-tier non-chocolate pick.",
+          "subtitle": "1960 / Wrigley / fruit chew",
+          "art": {
+            "type": "wiki",
+            "title": "Starburst (candy)"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "nerds",
+          "name": "Nerds",
+          "reasoning": "Nerds Gummy Clusters were a breakout hit that helped Ferrara's Nerds surpass $500M in annual sales, making it one of the fastest-growing US candy brands in the 2020s.",
+          "subtitle": "1983 / Ferrara / tangy crunch",
+          "art": {
+            "type": "wiki",
+            "title": "Nerds (candy)"
+          }
+        }
+      },
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "butterfinger",
+          "name": "Butterfinger",
+          "reasoning": "A mainstream staple with a crispy peanut-butter core, reformulated by Ferrara in 2019; well-liked but its brittle, teeth-sticking texture keeps it out of consensus top tiers.",
+          "subtitle": "1923 / Ferrara / peanut butter",
+          "art": {
+            "type": "logo",
+            "domain": "butterfinger.com"
+          }
+        }
+      },
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "milkyway",
+          "name": "Milky Way",
+          "reasoning": "A classic Mars bar of caramel and nougat that sells steadily, yet consistently ranks mid-pack behind stablemates Snickers and Twix in candy taste polls.",
+          "subtitle": "1923 / Mars / caramel nougat",
+          "art": {
+            "type": "wiki",
+            "title": "Milky Way (chocolate bar)"
+          }
+        }
+      },
+      {
+        "tierLabel": "C",
+        "item": {
+          "id": "almondjoy",
+          "name": "Almond Joy",
+          "reasoning": "Coconut is famously polarizing, landing this Hershey bar in the lower half of most consensus rankings despite a devoted minority fan base.",
+          "subtitle": "1946 / Hershey / coconut almond",
+          "art": {
+            "type": "wiki",
+            "title": "Almond Joy"
+          }
+        }
+      },
+      {
+        "tierLabel": "D",
+        "item": {
+          "id": "dots",
+          "name": "Dots",
+          "reasoning": "These Tootsie Roll gumdrops routinely appear on worst-Halloween-candy lists, with a sticky, tooth-pulling texture that draws little enthusiasm in taste rankings.",
+          "subtitle": "1945 / Tootsie Roll / gumdrops",
+          "art": {
+            "type": "wiki",
+            "title": "Dots (candy)"
+          }
+        }
+      },
+      {
+        "tierLabel": "F",
+        "item": {
+          "id": "neccowafers",
+          "name": "Necco Wafers",
+          "reasoning": "Frequently voted the chalkiest/worst candy in America; weak demand contributed to New England Confectionery Company (NECCO) shutting down in 2018.",
+          "subtitle": "1847 / NECCO / chalky discs",
+          "art": {
+            "type": "wiki",
+            "title": "Necco Wafers"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "listId": "soda-rankings",
+    "additions": [
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "canada-dry",
+          "name": "Canada Dry",
+          "subtitle": "1904 / ginger ale",
+          "reasoning": "The world's best-selling ginger ale and the default bar mixer for highballs and Moscow mules, a broadly liked, non-polarizing staple.",
+          "art": {
+            "type": "wiki",
+            "title": "Canada Dry"
+          }
+        }
+      },
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "diet-coke",
+          "name": "Diet Coke",
+          "subtitle": "1982 / diet cola",
+          "reasoning": "The best-selling diet soft drink in the U.S. for decades; in 2010 it overtook Pepsi to become the No. 2 soft drink in America overall.",
+          "art": {
+            "type": "wiki",
+            "title": "Diet Coke"
+          }
+        }
+      },
+      {
+        "tierLabel": "C",
+        "item": {
+          "id": "aw-root-beer",
+          "name": "A&W Root Beer",
+          "subtitle": "1919 / root beer",
+          "reasoning": "An iconic root beer since 1919, but root beer is a polarizing flavor with a narrower fanbase than mainstream colas and lemon-limes.",
+          "art": {
+            "type": "wiki",
+            "title": "A&W Root Beer"
+          }
+        }
+      },
+      {
+        "tierLabel": "C",
+        "item": {
+          "id": "seven-up",
+          "name": "7 Up",
+          "subtitle": "1929 / lemon-lime",
+          "reasoning": "A classic lemon-lime soda, but it was displaced by Diet Coke as the U.S. No. 3 soft drink in the 1980s and trails Sprite in sales and consensus.",
+          "art": {
+            "type": "wiki",
+            "title": "7 Up"
+          }
+        }
+      },
+      {
+        "tierLabel": "D",
+        "item": {
+          "id": "rc-cola",
+          "name": "RC Cola",
+          "subtitle": "1905 / cola",
+          "reasoning": "The perennial distant 'third cola,' a nostalgic also-ran that has long trailed far behind Coca-Cola and Pepsi in sales and shelf presence.",
+          "art": {
+            "type": "wiki",
+            "title": "RC Cola"
+          }
+        }
+      },
+      {
+        "tierLabel": "F",
+        "item": {
+          "id": "tab-soda",
+          "name": "Tab",
+          "subtitle": "1963 / diet cola",
+          "reasoning": "Coca-Cola's first diet cola was rendered obsolete by Diet Coke and discontinued in December 2020, remembered mostly for its harsh saccharin aftertaste.",
+          "art": {
+            "type": "wiki",
+            "title": "Tab (drink)"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "listId": "superheroes",
+    "additions": [
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "deadpool",
+          "name": "Deadpool",
+          "subtitle": "Marvel / 1991",
+          "reasoning": "Deadpool (2016) was the highest-grossing R-rated film at the time with over $780M worldwide, and Deadpool & Wolverine (2024) grossed roughly $1.34 billion, cementing him as a top-tier cultural icon.",
+          "art": {
+            "type": "wiki",
+            "title": "Deadpool"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "doctor-strange",
+          "name": "Doctor Strange",
+          "subtitle": "Marvel / 1963",
+          "reasoning": "A central MCU pillar since 2016 with two solo films plus key roles in Avengers: Infinity War and Endgame; Doctor Strange in the Multiverse of Madness (2022) grossed over $955 million worldwide.",
+          "art": {
+            "type": "wiki",
+            "title": "Doctor Strange"
+          }
+        }
+      },
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "captain-marvel",
+          "name": "Captain Marvel",
+          "subtitle": "Carol Danvers / Marvel",
+          "reasoning": "Captain Marvel (2019) crossed $1.1 billion worldwide, the first female-led MCU film to hit that milestone, establishing her as a prominent Avenger though a more recent addition to the pantheon.",
+          "art": {
+            "type": "wiki",
+            "title": "Carol Danvers"
+          }
+        }
+      },
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "the-flash",
+          "name": "The Flash",
+          "subtitle": "Barry Allen / DC",
+          "reasoning": "A founding member of the Justice League and one of DC's most iconic heroes, anchoring The CW's The Flash for nine seasons (2014-2023), the longest-running Arrowverse series.",
+          "art": {
+            "type": "wiki",
+            "title": "Flash (Barry Allen)"
+          }
+        }
+      },
+      {
+        "tierLabel": "C",
+        "item": {
+          "id": "cyclops",
+          "name": "Cyclops",
+          "subtitle": "Scott Summers / X-Men",
+          "reasoning": "The original field leader of the X-Men since 1963 and a core team member across comics and films, but rarely a breakout solo star, keeping his general-public profile below the flagship mutants.",
+          "art": {
+            "type": "wiki",
+            "title": "Cyclops (Marvel Comics)"
+          }
+        }
+      },
+      {
+        "tierLabel": "C",
+        "item": {
+          "id": "green-arrow",
+          "name": "Green Arrow",
+          "subtitle": "Oliver Queen / DC",
+          "reasoning": "Best known to mainstream audiences through The CW's Arrow (2012-2020), which launched the Arrowverse, though he lacks the top-tier film presence and household recognition of DC's core trinity.",
+          "art": {
+            "type": "wiki",
+            "title": "Green Arrow"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "listId": "social-media",
+    "additions": [
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "discord",
+          "name": "Discord",
+          "subtitle": "2015 / chat & communities",
+          "reasoning": "Discord surpassed 200 million monthly active users and was valued around $15 billion, becoming the default voice/text platform for gaming and online communities.",
+          "art": {
+            "type": "logo",
+            "domain": "discord.com"
+          }
+        }
+      },
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "twitch",
+          "name": "Twitch",
+          "subtitle": "2011 / live streaming",
+          "reasoning": "Amazon acquired Twitch for about $970 million in 2014, and it remains the dominant live-streaming platform, consistently ranking #1 by hours watched over rivals like YouTube Gaming.",
+          "art": {
+            "type": "logo",
+            "domain": "twitch.tv"
+          }
+        }
+      },
+      {
+        "tierLabel": "C",
+        "item": {
+          "id": "tumblr",
+          "name": "Tumblr",
+          "subtitle": "2007 / microblogging",
+          "reasoning": "Yahoo bought Tumblr for $1.1 billion in 2013, but its value collapsed to a roughly $3 million sale to Automattic in 2019 after the adult-content ban, reflecting its decline from peak relevance.",
+          "art": {
+            "type": "logo",
+            "domain": "tumblr.com"
+          }
+        }
+      },
+      {
+        "tierLabel": "D",
+        "item": {
+          "id": "bereal",
+          "name": "BeReal",
+          "subtitle": "2020 / daily photo",
+          "reasoning": "BeReal won Apple's iPhone App of the Year in 2022 and topped app-store charts, but daily active users dropped sharply afterward as the once-a-day novelty faded.",
+          "art": {
+            "type": "logo",
+            "domain": "bere.al"
+          }
+        }
+      },
+      {
+        "tierLabel": "F",
+        "item": {
+          "id": "vine",
+          "name": "Vine",
+          "subtitle": "2013-2017 / short video",
+          "reasoning": "Twitter shut down Vine in 2017; despite pioneering the 6-second looping-video format that shaped TikTok, it failed to monetize or retain creators, making it a defining flameout of the era.",
+          "art": {
+            "type": "wiki",
+            "title": "Vine (service)"
+          }
+        }
+      },
+      {
+        "tierLabel": "F",
+        "item": {
+          "id": "myspace",
+          "name": "Myspace",
+          "subtitle": "2003 / defunct network",
+          "reasoning": "Myspace was the most-visited site in the US in 2006, briefly surpassing Google, but collapsed after Facebook overtook it and infamously lost 12 years of user-uploaded music in a 2019 server migration.",
+          "art": {
+            "type": "logo",
+            "domain": "myspace.com"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "listId": "dog-breeds",
+    "additions": [
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "bordercollie",
+          "name": "Border Collie",
+          "reasoning": "Ranked the #1 most intelligent breed in Stanley Coren's 'The Intelligence of Dogs' (learns commands in under 5 repetitions); border collie Chaser was documented understanding 1,022 object names.",
+          "subtitle": "Herding breed",
+          "art": {
+            "type": "wiki",
+            "title": "Border Collie"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "rottweiler",
+          "name": "Rottweiler",
+          "reasoning": "Consistently an AKC top-10 most popular U.S. breed and one of the most widely used police, military, and protection dogs worldwide.",
+          "subtitle": "Working breed",
+          "art": {
+            "type": "wiki",
+            "title": "Rottweiler"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "australianshepherd",
+          "name": "Australian Shepherd",
+          "reasoning": "Ranks around AKC #12 in U.S. popularity and is a perennial top competitor in agility and flyball, prized for trainability and high work drive.",
+          "subtitle": "Herding breed",
+          "art": {
+            "type": "wiki",
+            "title": "Australian Shepherd"
+          }
+        }
+      },
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "siberianhusky",
+          "name": "Siberian Husky",
+          "reasoning": "Hugely popular for its wolf-like looks and sled heritage (famed in the 1925 Nome serum run), but widely noted as a demanding escape artist that sheds heavily and needs intense exercise.",
+          "subtitle": "Working sled breed",
+          "art": {
+            "type": "wiki",
+            "title": "Siberian Husky"
+          }
+        }
+      },
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "greatdane",
+          "name": "Great Dane",
+          "reasoning": "Beloved 'gentle giant' and among the tallest breeds (record-holder Zeus stood 44 inches), but a 7-10 year lifespan and giant-breed health issues temper its ranking.",
+          "subtitle": "Giant working breed",
+          "art": {
+            "type": "wiki",
+            "title": "Great Dane"
+          }
+        }
+      },
+      {
+        "tierLabel": "C",
+        "item": {
+          "id": "shihtzu",
+          "name": "Shih Tzu",
+          "reasoning": "A long-popular toy companion bred from Tibetan royalty stock, but its brachycephalic face brings breathing and eye problems that keep it a mid-tier pick.",
+          "subtitle": "Toy companion breed",
+          "art": {
+            "type": "wiki",
+            "title": "Shih Tzu"
+          }
+        }
+      },
+      {
+        "tierLabel": "D",
+        "item": {
+          "id": "pug",
+          "name": "Pug",
+          "reasoning": "Adored for its comic personality, but its extreme brachycephalic build causes chronic breathing, eye, and overheating problems; UK Royal Veterinary College research led vets to warn against the breed.",
+          "subtitle": "Toy companion breed",
+          "art": {
+            "type": "wiki",
+            "title": "Pug"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "listId": "car-brands",
+    "additions": [
+      {
+        "tierLabel": "S",
+        "item": {
+          "id": "ferrari",
+          "name": "Ferrari",
+          "reasoning": "Brand Finance named Ferrari the world's strongest brand in 2019 with a rare AAA+ rating, and it remains a global benchmark for automotive prestige and desirability.",
+          "subtitle": "Italy / supercars",
+          "art": {
+            "type": "logo",
+            "domain": "ferrari.com"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "mazda",
+          "name": "Mazda",
+          "reasoning": "Mazda topped Consumer Reports' overall Brand Report Card in 2021 as the highest-scoring brand of all, and consistently ranks among the most reliable mainstream automakers.",
+          "subtitle": "Japan / mainstream",
+          "art": {
+            "type": "logo",
+            "domain": "mazda.com"
+          }
+        }
+      },
+      {
+        "tierLabel": "A",
+        "item": {
+          "id": "audi",
+          "name": "Audi",
+          "reasoning": "Audi is one of the top-selling luxury marques worldwide, forming the German premium 'Big Three' alongside BMW and Mercedes-Benz.",
+          "subtitle": "Germany / luxury",
+          "art": {
+            "type": "logo",
+            "domain": "audi.com"
+          }
+        }
+      },
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "kia",
+          "name": "Kia",
+          "reasoning": "Kia ranked as the highest-ranked mass-market brand in J.D. Power's 2021 U.S. Initial Quality Study, reflecting a dramatic rise in build quality for a value-focused brand.",
+          "subtitle": "South Korea / value",
+          "art": {
+            "type": "logo",
+            "domain": "kia.com"
+          }
+        }
+      },
+      {
+        "tierLabel": "B",
+        "item": {
+          "id": "tesla",
+          "name": "Tesla",
+          "reasoning": "Tesla's Model Y and Model 3 are among the best-selling electric cars worldwide, yet Consumer Reports has repeatedly docked the brand for below-average build quality and panel-gap issues.",
+          "subtitle": "USA / electric",
+          "art": {
+            "type": "logo",
+            "domain": "tesla.com"
+          }
+        }
+      },
+      {
+        "tierLabel": "C",
+        "item": {
+          "id": "chevrolet",
+          "name": "Chevrolet",
+          "reasoning": "Chevrolet is General Motors' highest-volume brand and one of America's best-selling nameplates, but posts only average reliability, landing mid-pack in Consumer Reports rankings.",
+          "subtitle": "USA / mainstream",
+          "art": {
+            "type": "logo",
+            "domain": "chevrolet.com"
+          }
+        }
+      },
+      {
+        "tierLabel": "D",
+        "item": {
+          "id": "jeep",
+          "name": "Jeep",
+          "reasoning": "Jeep consistently lands near the bottom of Consumer Reports' brand reliability rankings, repeatedly ranking among the least reliable brands surveyed.",
+          "subtitle": "USA / off-road",
+          "art": {
+            "type": "logo",
+            "domain": "jeep.com"
+          }
+        }
+      },
+      {
+        "tierLabel": "F",
+        "item": {
+          "id": "fiat",
+          "name": "Fiat",
+          "reasoning": "Fiat has repeatedly ranked as one of the least dependable brands, finishing at or near dead last in multiple J.D. Power dependability studies and What Car? reliability surveys.",
+          "subtitle": "Italy / low",
+          "art": {
+            "type": "logo",
+            "domain": "fiat.com"
+          }
+        }
+      }
+    ]
+  }
+]

@@ -28,6 +28,8 @@ interface EditorState {
 
   setTitle: (title: string) => void;
   moveItem: (itemId: string, toZone: string, index?: number) => void;
+  /** Reorder an item left/right within whatever zone currently holds it. */
+  moveWithinZone: (itemId: string, direction: -1 | 1) => void;
   removeItem: (itemId: string) => void;
   renameTier: (tierId: string, label: string) => void;
   recolorTier: (tierId: string, color: string) => void;
@@ -110,6 +112,29 @@ export const useEditorStore = create<EditorState>((set, get) => {
         return { ...cleared, tiers };
       });
       set({ selectedItemId: null });
+    },
+
+    moveWithinZone: (itemId, direction) => {
+      const swap = (arr: string[]): string[] | null => {
+        const i = arr.indexOf(itemId);
+        const target = i + direction;
+        if (i === -1 || target < 0 || target >= arr.length) return null;
+        const next = [...arr];
+        [next[i], next[target]] = [next[target], next[i]];
+        return next;
+      };
+      commit((list) => {
+        const tierIdx = list.tiers.findIndex((t) => t.itemIds.includes(itemId));
+        if (tierIdx !== -1) {
+          const next = swap(list.tiers[tierIdx].itemIds);
+          if (!next) return list;
+          const tiers = [...list.tiers];
+          tiers[tierIdx] = { ...tiers[tierIdx], itemIds: next };
+          return { ...list, tiers };
+        }
+        const next = swap(list.unrankedIds);
+        return next ? { ...list, unrankedIds: next } : list;
+      });
     },
 
     removeItem: (itemId) => {

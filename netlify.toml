@@ -15,9 +15,10 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# Nice URLs: /national-flags instead of /national-flags.html
+# Pages are emitted as /<slug>/index.html, so Netlify serves clean URLs
+# (/national-flags) natively — no rewrite needed. Redirect any old .html links.
 [[redirects]]
-  from = "/:slug"
-  to = "/:slug.html"
-  status = 200
+  from = "/:slug.html"
+  to = "/:slug"
+  status = 301
   force = false

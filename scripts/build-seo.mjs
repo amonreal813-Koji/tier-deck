@@ -157,7 +157,7 @@ function cell(it, hint) {
 }
 
 function pageHtml(list) {
-  const url = `${BASE_URL}/${list.id}.html`;
+  const url = `${BASE_URL}/${list.id}`;
   const desc = list.tagline || `A tier list ranking ${list.title}.`;
   const hint = SHOP[list.id];
   const allItems = list.tiers.flatMap((t) => t.items);
@@ -182,13 +182,13 @@ function pageHtml(list) {
 <style>${CSS}</style>
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 </head><body><div class="wrap">
-<p class="top"><a href="index.html">← All tier lists</a></p>
+<p class="top"><a href="/">← All tier lists</a></p>
 <h1>${esc(list.title)}</h1>
 <p class="tagline">${esc(desc)}</p>
 ${list.basis ? `<div class="basis">${esc(list.basis)}</div>` : ''}
 ${tiers}
 ${hint ? `<p class="disc">As an Amazon Associate we may earn from qualifying purchases.</p>` : ''}
-<p class="foot">◆ Ranked on Tier Deck · <a href="index.html">browse all ${catalog.length} lists</a></p>
+<p class="foot">◆ Ranked on Tier Deck · <a href="/">browse all ${catalog.length} lists</a></p>
 </div></body></html>`;
 }
 
@@ -207,7 +207,7 @@ function indexHtml() {
     .sort((a, b) => a.title.localeCompare(b.title))
     .map((l) => {
       const strip = l.tiers.slice(0, 6).map((t) => `<i style="background:${t.color}"></i>`).join('');
-      return `<a class="card" href="${l.id}.html">${heroFor(l)}<div class="strip">${strip}</div><div class="cbody"><b>${esc(l.title)}</b><span>${esc(l.tagline || '')}</span></div></a>`;
+      return `<a class="card" href="/${l.id}">${heroFor(l)}<div class="strip">${strip}</div><div class="cbody"><b>${esc(l.title)}</b><span>${esc(l.tagline || '')}</span></div></a>`;
     })
     .join('\n');
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">
@@ -225,14 +225,19 @@ function indexHtml() {
 }
 
 function sitemap() {
-  const urls = ['index.html', ...catalog.map((l) => `${l.id}.html`)].map((u) => `<url><loc>${BASE_URL}/${u}</loc></url>`).join('');
+  const urls = ['', ...catalog.map((l) => l.id)].map((u) => `<url><loc>${BASE_URL}/${u}</loc></url>`).join('');
   return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`;
 }
 
 await resolveAllArt();
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
-for (const list of catalog) fs.writeFileSync(path.join(OUT, `${list.id}.html`), pageHtml(list));
+// One directory per list → Netlify serves clean URLs (/sneaker-brands) natively.
+for (const list of catalog) {
+  const dir = path.join(OUT, list.id);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'index.html'), pageHtml(list));
+}
 fs.writeFileSync(path.join(OUT, 'index.html'), indexHtml());
 fs.writeFileSync(path.join(OUT, 'sitemap.xml'), sitemap());
 fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${BASE_URL}/sitemap.xml\n`);

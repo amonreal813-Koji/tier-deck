@@ -8,12 +8,24 @@
 #      AMAZON_TAG = yourtag-20                   (your Amazon Associates tag)
 # 4. Deploy. Every push rebuilds all 238 pages + sitemap.
 
+# Build BOTH outputs into seo-site/:
+#  1. build-seo.mjs wipes + regenerates the static SEO pages at the root.
+#  2. expo export emits the full interactive app into seo-site/app (served
+#     at /app). Order matters — build-seo runs first because it clears seo-site/.
 [build]
-  command = "node scripts/build-seo.mjs"
+  command = "node scripts/build-seo.mjs && npx expo export -p web --output-dir seo-site/app"
   publish = "seo-site"
 
 [build.environment]
   NODE_VERSION = "20"
+
+# SPA fallback for the app: any /app/* path that isn't a real file (deep links,
+# refreshes on /app/premade/…) serves the app shell. Real assets under
+# /app/_expo/ are served directly since force is off.
+[[redirects]]
+  from = "/app/*"
+  to = "/app/index.html"
+  status = 200
 
 # Pages are emitted as /<slug>/index.html, so Netlify serves clean URLs
 # (/national-flags) natively — no rewrite needed. Redirect any old .html links.

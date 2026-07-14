@@ -24,13 +24,20 @@ type CollState =
   | { status: 'results'; items: TierItem[] }
   | { status: 'empty' };
 
+type SubjState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'results'; items: Subject[] }
+  | { status: 'empty' }
+  | { status: 'error' };
+
 export default function TopicScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const createList = useListsStore((s) => s.createList);
 
   const [subjectQuery, setSubjectQuery] = useState('');
-  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [subjState, setSubjState] = useState<SubjState>({ status: 'idle' });
   const [subject, setSubject] = useState<Subject | null>(null);
   const [facet, setFacet] = useState<Facet | null>(null);
   const [coll, setColl] = useState<CollState>({ status: 'idle' });
@@ -40,19 +47,47 @@ export default function TopicScreen() {
 
   const stagedList = useMemo(() => Object.values(staged), [staged]);
 
-  // Debounced subject autocomplete.
+  // Debounced subject autocomplete with visible loading / empty / error states.
   useEffect(() => {
     if (subject) return;
+    if (subjectQuery.trim().length < 2) {
+      abortRef.current?.abort();
+      setSubjState({ status: 'idle' });
+      return;
+    }
     const t = setTimeout(() => {
       abortRef.current?.abort();
       const c = new AbortController();
       abortRef.current = c;
+      setSubjState({ status: 'loading' });
       searchSubjects(subjectQuery, c.signal)
-        .then((s) => !c.signal.aborted && setSubjects(s))
-        .catch(() => {});
+        .then((s) => {
+          if (c.signal.aborted) return;
+          setSubjState(s.length ? { status: 'results', items: s } : { status: 'empty' });
+        })
+        .catch(() => {
+          if (!c.signal.aborted) setSubjState({ status: 'error' });
+        });
     }, 300);
     return () => clearTimeout(t);
   }, [subjectQuery, subject]);
+
+  const retrySubjects = useCallback(() => {
+    const q = subjectQuery.trim();
+    if (q.length < 2) return;
+    abortRef.current?.abort();
+    const c = new AbortController();
+    abortRef.current = c;
+    setSubjState({ status: 'loading' });
+    searchSubjects(q, c.signal)
+      .then((s) => {
+        if (c.signal.aborted) return;
+        setSubjState(s.length ? { status: 'results', items: s } : { status: 'empty' });
+      })
+      .catch(() => {
+        if (!c.signal.aborted) setSubjState({ status: 'error' });
+      });
+  }, [subjectQuery]);
 
   const loadFacet = useCallback(
     (subj: Subject, f: Facet) => {
@@ -74,7 +109,7 @@ export default function TopicScreen() {
   const pickSubject = (s: Subject) => {
     Haptics.selectionAsync();
     setSubject(s);
-    setSubjects([]);
+    setSubjState({ status: 'idle' });
     loadFacet(s, FACETS[0]); // default to Characters; user can switch
   };
 
@@ -83,6 +118,7 @@ export default function TopicScreen() {
     setSubject(null);
     setFacet(null);
     setColl({ status: 'idle' });
+    setSubjState({ status: 'idle' });
     setStaged({});
     setSubjectQuery('');
   };
@@ -146,35 +182,61 @@ export default function TopicScreen() {
                   autoCorrect={false}
                 />
               </GlassPanel>
-              <FlatList
-                data={subjects}
-                keyExtractor={(s) => s.title}
-                keyboardShouldPersistTaps="handled"
-                style={{ marginTop: spacing.md }}
-                contentContainerStyle={{ paddingBottom: 40 }}
-                renderItem={({ item, index }) => (
-                  <Animated.View entering={FadeInDown.delay(Math.min(index, 8) * 35).springify()}>
-                    <PressableScale onPress={() => pickSubject(item)} style={{ marginBottom: spacing.sm }}>
-                      <GlassPanel radius={14}>
-                        <View style={styles.subjectRow}>
-                          <ItemThumb
-                            item={{ id: item.title, name: item.title, imageUrl: item.imageUrl ?? null, category: 'anything' }}
-                            size={46}
-                            radius={10}
-                          />
-                          <View style={{ flex: 1 }}>
-                            <Text style={styles.subjectName} numberOfLines={1}>{item.title}</Text>
-                            {item.description ? (
-                              <Text style={styles.subjectDesc} numberOfLines={1}>{item.description}</Text>
-                            ) : null}
+              {subjState.status === 'loading' ? (
+                <View style={{ marginTop: spacing.md, gap: spacing.sm }}>
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <Skeleton key={i} width={'100%' as unknown as number} height={66} radius={14} />
+                  ))}
+                </View>
+              ) : subjState.status === 'empty' ? (
+                <Animated.View entering={FadeIn} style={styles.subjMessage}>
+                  <Text style={styles.bigGlyph}>🔍</Text>
+                  <Text style={styles.emptyTitle}>No matches for “{subjectQuery.trim()}”</Text>
+                  <Text style={styles.sub}>Check the spelling, or build your list from scratch.</Text>
+                  <PressableScale onPress={() => router.replace('/create/custom')} style={styles.subjAction}>
+                    <Text style={styles.subjActionText}>Start from scratch →</Text>
+                  </PressableScale>
+                </Animated.View>
+              ) : subjState.status === 'error' ? (
+                <Animated.View entering={FadeIn} style={styles.subjMessage}>
+                  <Text style={styles.bigGlyph}>📡</Text>
+                  <Text style={styles.emptyTitle}>Couldn’t reach search</Text>
+                  <Text style={styles.sub}>Check your connection and try again.</Text>
+                  <PressableScale onPress={retrySubjects} style={styles.subjAction}>
+                    <Text style={styles.subjActionText}>Try again</Text>
+                  </PressableScale>
+                </Animated.View>
+              ) : (
+                <FlatList
+                  data={subjState.status === 'results' ? subjState.items : []}
+                  keyExtractor={(s) => s.title}
+                  keyboardShouldPersistTaps="handled"
+                  style={{ marginTop: spacing.md }}
+                  contentContainerStyle={{ paddingBottom: 40 }}
+                  renderItem={({ item, index }) => (
+                    <Animated.View entering={FadeInDown.delay(Math.min(index, 8) * 35).springify()}>
+                      <PressableScale onPress={() => pickSubject(item)} style={{ marginBottom: spacing.sm }}>
+                        <GlassPanel radius={14}>
+                          <View style={styles.subjectRow}>
+                            <ItemThumb
+                              item={{ id: item.title, name: item.title, imageUrl: item.imageUrl ?? null, category: 'anything' }}
+                              size={46}
+                              radius={10}
+                            />
+                            <View style={{ flex: 1 }}>
+                              <Text style={styles.subjectName} numberOfLines={1}>{item.title}</Text>
+                              {item.description ? (
+                                <Text style={styles.subjectDesc} numberOfLines={1}>{item.description}</Text>
+                              ) : null}
+                            </View>
+                            <Text style={styles.subjectArrow}>→</Text>
                           </View>
-                          <Text style={styles.subjectArrow}>→</Text>
-                        </View>
-                      </GlassPanel>
-                    </PressableScale>
-                  </Animated.View>
-                )}
-              />
+                        </GlassPanel>
+                      </PressableScale>
+                    </Animated.View>
+                  )}
+                />
+              )}
             </>
           ) : (
             <>
@@ -375,6 +437,12 @@ const styles = StyleSheet.create({
   },
   checkText: { color: '#FFF', fontSize: 13, fontWeight: '700' },
   centerFill: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingBottom: 120, gap: 4 },
+  subjMessage: { alignItems: 'center', justifyContent: 'center', paddingTop: spacing.xl * 1.5, paddingHorizontal: spacing.lg, gap: 4 },
+  subjAction: {
+    marginTop: spacing.lg, paddingHorizontal: spacing.lg, paddingVertical: spacing.sm + 2, borderRadius: radii.pill,
+    backgroundColor: withAlpha('#7C5CFF', 0.2), borderWidth: 1, borderColor: withAlpha('#7C5CFF', 0.5),
+  },
+  subjActionText: { fontFamily: fonts.bodySemiBold, fontSize: type.caption, color: '#C9BBFF' },
   bigGlyph: { fontSize: 42, marginBottom: spacing.sm },
   emptyTitle: { fontFamily: fonts.displayMedium, fontSize: type.heading, color: colors.textHi, textAlign: 'center' },
   footer: { position: 'absolute', left: 0, right: 0, bottom: 0, alignItems: 'center', paddingHorizontal: spacing.lg },

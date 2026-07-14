@@ -1,7 +1,7 @@
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ActionSheet } from '@/components/ActionSheet';
@@ -10,6 +10,7 @@ import { GlassPanel } from '@/components/GlassPanel';
 import { PressableScale } from '@/components/PressableScale';
 import { useToast } from '@/components/Toast';
 import { heroArtFor, itemNamesOf, premadeLists } from '@/data/premade';
+import type { PremadeList } from '@/data/premade/types';
 import type { Category, TierList } from '@/data/types';
 import { FAB } from '@/features/home/FAB';
 import { GridListCard, type Strip } from '@/features/home/GridListCard';
@@ -60,6 +61,73 @@ function userHeroUri(list: TierList): string | null {
   return null;
 }
 
+const SHELF_CARD_W = 168;
+const SHELF_PREVIEW = 15; // horizontal FlatList virtualizes; this is just the cap
+
+/** One category's lists as a horizontal carousel with a tappable "See all" head. */
+function CategoryShelf({
+  cat,
+  lists,
+  gutter,
+  onSeeAll,
+  onOpen,
+}: {
+  cat: Category;
+  lists: PremadeList[];
+  gutter: number;
+  onSeeAll: () => void;
+  onOpen: (l: PremadeList) => void;
+}) {
+  if (lists.length === 0) return null;
+  const preview = lists.slice(0, SHELF_PREVIEW);
+  const overflow = lists.length > SHELF_PREVIEW;
+  return (
+    <View style={{ marginBottom: spacing.lg }}>
+      <PressableScale onPress={onSeeAll} style={styles.shelfHead}>
+        <Text style={styles.shelfTitle}>
+          {CAT_GLYPH[cat]} {CAT_LABEL[cat]}
+        </Text>
+        <Text style={styles.shelfSeeAll}>{lists.length} · See all →</Text>
+      </PressableScale>
+      <FlatList
+        horizontal
+        data={preview}
+        keyExtractor={(l) => l.id}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ gap: gutter, paddingRight: spacing.lg }}
+        renderItem={({ item, index }) => {
+          const strips: Strip[] = item.tiers.map((t) => ({ color: t.color, weight: t.items.length }));
+          const count = item.tiers.reduce((n, t) => n + t.items.length, 0);
+          return (
+            <GridListCard
+              title={item.title}
+              subtitle={item.tagline}
+              glyph={CAT_GLYPH[item.category]}
+              accent={CATEGORY_ACCENTS[item.category]}
+              strips={strips}
+              badge={`${count} ranked`}
+              heroSpec={heroArtFor(item)}
+              width={SHELF_CARD_W}
+              index={index}
+              onPress={() => onOpen(item)}
+            />
+          );
+        }}
+        ListFooterComponent={
+          overflow ? (
+            <PressableScale onPress={onSeeAll} scaleTo={0.96} style={{ width: SHELF_CARD_W }}>
+              <View style={styles.seeAllCard}>
+                <Text style={styles.seeAllPlus}>→</Text>
+                <Text style={styles.seeAllLabel}>See all {lists.length}</Text>
+              </View>
+            </PressableScale>
+          ) : null
+        }
+      />
+    </View>
+  );
+}
+
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
@@ -105,6 +173,20 @@ export default function HomeScreen() {
   // When searching, show every match; otherwise page it (tap "Show all").
   const paged = query.trim().length > 0 || expanded;
   const shownConsensus = paged ? consensus : consensus.slice(0, PAGE);
+
+  // Unfiltered + not searching → browse by category "shelves" (one horizontal
+  // carousel per category), so all 238 lists are scannable without an endless
+  // vertical scroll. Picking a category or searching switches back to the grid.
+  const browsing = activeCat === 'all' && query.trim().length === 0;
+  const shelves = useMemo(() => {
+    const map = new Map<Category, PremadeList[]>();
+    for (const l of premadeLists) {
+      const arr = map.get(l.category);
+      if (arr) arr.push(l);
+      else map.set(l.category, [l]);
+    }
+    return categories.map((cat) => ({ cat, lists: map.get(cat) ?? [] }));
+  }, [categories]);
 
   const yours = rankByQuery(query, byCat(userLists), (l) => ({
     title: l.title,
@@ -221,46 +303,66 @@ export default function HomeScreen() {
           {/* The Consensus */}
           <View style={styles.sectionHead}>
             <Text style={styles.sectionTitle}>The Consensus</Text>
-            <Text style={styles.sectionSub}>{consensus.length} curated · tap in for the reasons</Text>
+            <Text style={styles.sectionSub}>
+              {browsing ? `${premadeLists.length} curated · browse by category` : `${consensus.length} curated · tap in for the reasons`}
+            </Text>
           </View>
-          {consensus.length === 0 ? (
+
+          {browsing ? (
+            shelves.map(({ cat, lists: catLists }) => (
+              <CategoryShelf
+                key={cat}
+                cat={cat}
+                lists={catLists}
+                gutter={layout.gutter}
+                onSeeAll={() => {
+                  Haptics.selectionAsync();
+                  setActiveCat(cat);
+                  setExpanded(true);
+                }}
+                onOpen={(l) => router.push({ pathname: '/premade/[premadeId]', params: { premadeId: l.id } })}
+              />
+            ))
+          ) : consensus.length === 0 ? (
             <Text style={styles.noResults}>No curated lists match “{query}”. Your search might make a great new list — tap +.</Text>
           ) : (
-            <View style={[gridStyle, { marginBottom: spacing.md }]}>
-              {shownConsensus.map((list, i) => {
-                const strips: Strip[] = list.tiers.map((t) => ({ color: t.color, weight: t.items.length }));
-                const count = list.tiers.reduce((n, t) => n + t.items.length, 0);
-                return (
-                  <GridListCard
-                    key={list.id}
-                    title={list.title}
-                    subtitle={list.tagline}
-                    glyph={CAT_GLYPH[list.category]}
-                    accent={CATEGORY_ACCENTS[list.category]}
-                    strips={strips}
-                    badge={`${count} ranked`}
-                    heroSpec={heroArtFor(list)}
-                    width={layout.cardWidth}
-                    index={i}
-                    onPress={() =>
-                      router.push({ pathname: '/premade/[premadeId]', params: { premadeId: list.id } })
-                    }
-                  />
-                );
-              })}
-            </View>
-          )}
+            <>
+              <View style={[gridStyle, { marginBottom: spacing.md }]}>
+                {shownConsensus.map((list, i) => {
+                  const strips: Strip[] = list.tiers.map((t) => ({ color: t.color, weight: t.items.length }));
+                  const count = list.tiers.reduce((n, t) => n + t.items.length, 0);
+                  return (
+                    <GridListCard
+                      key={list.id}
+                      title={list.title}
+                      subtitle={list.tagline}
+                      glyph={CAT_GLYPH[list.category]}
+                      accent={CATEGORY_ACCENTS[list.category]}
+                      strips={strips}
+                      badge={`${count} ranked`}
+                      heroSpec={heroArtFor(list)}
+                      width={layout.cardWidth}
+                      index={i}
+                      onPress={() =>
+                        router.push({ pathname: '/premade/[premadeId]', params: { premadeId: list.id } })
+                      }
+                    />
+                  );
+                })}
+              </View>
 
-          {!paged && consensus.length > PAGE ? (
-            <PressableScale onPress={() => setExpanded(true)} style={styles.showAll}>
-              <Text style={styles.showAllText}>Show all {consensus.length} lists ↓</Text>
-            </PressableScale>
-          ) : null}
-          {paged && !query && consensus.length > PAGE ? (
-            <PressableScale onPress={() => setExpanded(false)} style={styles.showAll}>
-              <Text style={styles.showAllText}>Show less ↑</Text>
-            </PressableScale>
-          ) : null}
+              {!paged && consensus.length > PAGE ? (
+                <PressableScale onPress={() => setExpanded(true)} style={styles.showAll}>
+                  <Text style={styles.showAllText}>Show all {consensus.length} lists ↓</Text>
+                </PressableScale>
+              ) : null}
+              {paged && !query && consensus.length > PAGE ? (
+                <PressableScale onPress={() => setExpanded(false)} style={styles.showAll}>
+                  <Text style={styles.showAllText}>Show less ↑</Text>
+                </PressableScale>
+              ) : null}
+            </>
+          )}
 
           <View style={{ height: spacing.xl }} />
 
@@ -399,6 +501,33 @@ const styles = StyleSheet.create({
     alignItems: 'baseline',
     justifyContent: 'space-between',
     marginBottom: spacing.md,
+  },
+  shelfHead: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+    marginBottom: spacing.sm,
+  },
+  shelfTitle: { fontFamily: fonts.displayMedium, fontSize: type.heading, color: colors.textHi },
+  shelfSeeAll: { fontFamily: fonts.bodySemiBold, fontSize: type.micro + 1, color: '#B9A5FF' },
+  seeAllCard: {
+    height: 168,
+    borderRadius: radii.panel,
+    borderWidth: 1.5,
+    borderColor: withAlpha(colors.brandA, 0.4),
+    borderStyle: 'dashed',
+    backgroundColor: withAlpha(colors.brandA, 0.06),
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.md,
+  },
+  seeAllPlus: { fontFamily: fonts.display, fontSize: 30, color: '#B9A5FF' },
+  seeAllLabel: {
+    fontFamily: fonts.bodySemiBold,
+    fontSize: type.caption,
+    color: colors.textHi,
+    marginTop: spacing.xs,
+    textAlign: 'center',
   },
   sectionTitle: { fontFamily: fonts.displayMedium, fontSize: type.title, color: colors.textHi },
   sectionSub: { fontFamily: fonts.body, fontSize: type.micro + 1, color: colors.textLow },

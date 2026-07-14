@@ -79,6 +79,25 @@ export default function ExportScreen() {
     }
   };
 
+  // Web capture: rasterize the canvas DOM node to a PNG data URL. react-native-web
+  // forwards the View ref to its underlying <div>, so canvasRef.current is a real
+  // HTMLElement here. Runs at 2x for a crisp, share-ready image.
+  const captureWebDataUrl = async (): Promise<string | null> => {
+    try {
+      const node = canvasRef.current as unknown as HTMLElement | null;
+      if (!node) return null;
+      const { toPng } = require('html-to-image') as typeof import('html-to-image');
+      return await toPng(node, {
+        pixelRatio: 2,
+        cacheBust: true,
+        backgroundColor: colors.bg,
+      });
+    } catch {
+      toast('Could not render the image. Try again.');
+      return null;
+    }
+  };
+
   const celebrate = () => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     setConfettiNonce((n) => n + 1);
@@ -105,6 +124,28 @@ export default function ExportScreen() {
     } catch {
       toast('Could not open share sheet.');
     }
+  };
+
+  // Web download: build the PNG, then hand it to the browser as a file download.
+  const handleDownload = async () => {
+    if (busy || !ready) return;
+    setBusy(true);
+    const dataUrl = await captureWebDataUrl();
+    if (dataUrl) {
+      const slug = (list.title || 'tier-list')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `${slug || 'tier-list'}-tier-deck.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      celebrate();
+      toast('Image downloaded ✨');
+    }
+    setBusy(false);
   };
 
   const handleShare = async () => {
@@ -173,16 +214,27 @@ export default function ExportScreen() {
 
       <View style={[styles.actions, { paddingBottom: insets.bottom + spacing.lg }]}>
         {isWeb ? (
-          <PressableScale onPress={handleCopyLink} style={{ flex: 1 }}>
-            <LinearGradient
-              colors={[colors.brandA, colors.brandB]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.primaryBtn}
+          <>
+            <PressableScale onPress={handleCopyLink} style={styles.secondaryBtn}>
+              <Text style={styles.secondaryText}>Copy link</Text>
+            </PressableScale>
+            <PressableScale
+              onPress={handleDownload}
+              disabled={!ready || busy}
+              style={[{ flex: 1 }, (!ready || busy) && styles.btnDisabled]}
             >
-              <Text style={styles.primaryText}>Copy share link</Text>
-            </LinearGradient>
-          </PressableScale>
+              <LinearGradient
+                colors={[colors.brandA, colors.brandB]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.primaryBtn}
+              >
+                <Text style={styles.primaryText}>
+                  {busy ? 'Rendering…' : 'Download PNG'}
+                </Text>
+              </LinearGradient>
+            </PressableScale>
+          </>
         ) : (
           <>
             <PressableScale

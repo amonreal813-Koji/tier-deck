@@ -128,6 +128,9 @@ h1{font-size:clamp(28px,5vw,40px);line-height:1.12;margin:0 0 6px;background:lin
 .buy{display:inline-block;margin-top:8px;font-size:12px;font-weight:700;color:#8BF0B0}
 .disc{color:#6E6E80;font-size:12px;margin-top:26px}
 .foot{margin-top:34px;color:#6E6E80;font-size:13px}
+.cta{display:inline-block;padding:13px 22px;border-radius:999px;font-weight:800;font-size:15px;color:#0A0A0F;background:linear-gradient(90deg,#7C5CFF,#4CC9F0);box-shadow:0 8px 24px rgba(124,92,255,.35);transition:filter .15s}
+.cta:hover{filter:brightness(1.07)}
+.ctawrap{margin:2px 0 30px}
 /* index */
 .lede{color:#C2C2D0;font-size:18px;margin:0 0 26px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
@@ -186,6 +189,7 @@ function pageHtml(list) {
 <h1>${esc(list.title)}</h1>
 <p class="tagline">${esc(desc)}</p>
 ${list.basis ? `<div class="basis">${esc(list.basis)}</div>` : ''}
+<div class="ctawrap"><a class="cta" href="/app">✦ Disagree? Make your own →</a></div>
 ${tiers}
 ${hint ? `<p class="disc">As an Amazon Associate we may earn from qualifying purchases.</p>` : ''}
 <p class="foot">◆ Ranked on Tier Deck · <a href="/">browse all ${catalog.length} lists</a></p>
@@ -219,6 +223,7 @@ function indexHtml() {
 <style>${CSS}</style></head><body><div class="wrap">
 <h1>Every Tier List</h1>
 <p class="lede">${catalog.length} fact-checked rankings — tap in for the reasons behind every placement.</p>
+<div class="ctawrap"><a class="cta" href="/app">✦ Make your own tier list →</a></div>
 <div class="grid">${cards}</div>
 <p class="foot">◆ Tier Deck</p>
 </div></body></html>`;

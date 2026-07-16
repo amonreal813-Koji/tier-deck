@@ -19,6 +19,16 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Bare domain opens the interactive app (the front door). force = true so the
+# redirect beats the static index.html that also sits at the root. Individual
+# SEO pages (/sneaker-brands) and the list hub (/lists) are unaffected —
+# from = "/" matches only the exact root path, not sub-paths.
+[[redirects]]
+  from = "/"
+  to = "/app"
+  status = 301
+  force = true
+
 # SPA fallback for the app: any /app/* path that isn't a real file (deep links,
 # refreshes on /app/premade/…) serves the app shell. Real assets under
 # /app/_expo/ are served directly since force is off.

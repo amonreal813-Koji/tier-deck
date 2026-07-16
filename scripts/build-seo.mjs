@@ -185,14 +185,14 @@ function pageHtml(list) {
 <style>${CSS}</style>
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 </head><body><div class="wrap">
-<p class="top"><a href="/">← All tier lists</a></p>
+<p class="top"><a href="/lists">← All tier lists</a></p>
 <h1>${esc(list.title)}</h1>
 <p class="tagline">${esc(desc)}</p>
 ${list.basis ? `<div class="basis">${esc(list.basis)}</div>` : ''}
 <div class="ctawrap"><a class="cta" href="/app">✦ Disagree? Make your own →</a></div>
 ${tiers}
 ${hint ? `<p class="disc">As an Amazon Associate we may earn from qualifying purchases.</p>` : ''}
-<p class="foot">◆ Ranked on Tier Deck · <a href="/">browse all ${catalog.length} lists</a></p>
+<p class="foot">◆ Ranked on Tier Deck · <a href="/lists">browse all ${catalog.length} lists</a></p>
 </div></body></html>`;
 }
 
@@ -230,7 +230,8 @@ function indexHtml() {
 }
 
 function sitemap() {
-  const urls = ['', ...catalog.map((l) => l.id)].map((u) => `<url><loc>${BASE_URL}/${u}</loc></url>`).join('');
+  // Root redirects to /app, so the crawlable hub is /lists (not "").
+  const urls = ['lists', ...catalog.map((l) => l.id)].map((u) => `<url><loc>${BASE_URL}/${u}</loc></url>`).join('');
   return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`;
 }
 
@@ -243,7 +244,11 @@ for (const list of catalog) {
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'index.html'), pageHtml(list));
 }
+// The list hub lives at /lists (the bare root 301s to /app). Keep a copy at the
+// root too as a harmless fallback if the redirect is ever removed.
 fs.writeFileSync(path.join(OUT, 'index.html'), indexHtml());
+fs.mkdirSync(path.join(OUT, 'lists'), { recursive: true });
+fs.writeFileSync(path.join(OUT, 'lists', 'index.html'), indexHtml());
 fs.writeFileSync(path.join(OUT, 'sitemap.xml'), sitemap());
 fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${BASE_URL}/sitemap.xml\n`);
 const resolved = Object.values(cache).filter(Boolean).length;

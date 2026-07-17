@@ -12,20 +12,32 @@ create table if not exists public.profiles (
   created_at   timestamptz not null default now()
 );
 
+-- Display names are unique (case-insensitive). See the index below.
+create unique index if not exists profiles_display_name_unique
+  on public.profiles (lower(display_name));
+
 -- Auto-create a profile row the moment someone signs up (Google/Apple/email).
+-- Names must be unique, so if two people share a name ("Alex Smith") we append
+-- the smallest free number ("Alex Smith2") — signup must never fail on a clash.
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = public as $$
+declare
+  base_name text;
+  candidate text;
+  n int := 1;
 begin
+  base_name := coalesce(
+    new.raw_user_meta_data->>'full_name',
+    new.raw_user_meta_data->>'name',
+    split_part(coalesce(new.email, 'ranker'), '@', 1)
+  );
+  candidate := base_name;
+  while exists (select 1 from public.profiles where lower(display_name) = lower(candidate)) loop
+    n := n + 1;
+    candidate := base_name || n;
+  end loop;
   insert into public.profiles (id, display_name, avatar_url)
-  values (
-    new.id,
-    coalesce(
-      new.raw_user_meta_data->>'full_name',
-      new.raw_user_meta_data->>'name',
-      split_part(coalesce(new.email, 'ranker'), '@', 1)
-    ),
-    new.raw_user_meta_data->>'avatar_url'
-  )
+  values (new.id, candidate, new.raw_user_meta_data->>'avatar_url')
   on conflict (id) do nothing;
   return new;
 end;

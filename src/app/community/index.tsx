@@ -6,10 +6,11 @@ import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AnimatedGradientBg } from '@/components/AnimatedGradientBg';
+import { Avatar } from '@/components/Avatar';
 import { GlassPanel } from '@/components/GlassPanel';
 import { PressableScale } from '@/components/PressableScale';
 import { useToast } from '@/components/Toast';
-import { fetchFeed, setLike, type FeedSort, type PublishedList } from '@/data/community';
+import { fetchFeed, fetchMyProfile, setLike, type FeedSort, type Profile, type PublishedList } from '@/data/community';
 import { isCommunityEnabled } from '@/lib/supabase';
 import { useAuth } from '@/store/useAuth';
 import { withAlpha } from '@/theme/tierColors';
@@ -37,6 +38,7 @@ function PublishedCard({
             ))}
           </View>
           <View style={styles.cardBody}>
+            <Avatar url={item.author?.avatar_url} name={item.author?.display_name} size={38} />
             <View style={{ flex: 1 }}>
               <Text style={styles.cardTitle} numberOfLines={1}>{item.title}</Text>
               <Text style={styles.cardMeta} numberOfLines={1}>
@@ -66,6 +68,16 @@ export default function CommunityScreen() {
   const [sort, setSort] = useState<FeedSort>('hot');
   const [feed, setFeed] = useState<PublishedList[]>([]);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [myProfile, setMyProfile] = useState<Profile | null>(null);
+
+  // Home is a reliable destination even when there's no history to pop
+  // (e.g. landing here straight from the OAuth redirect).
+  const goBack = () => (router.canGoBack() ? router.back() : router.replace('/'));
+
+  useEffect(() => {
+    if (user) fetchMyProfile().then(setMyProfile).catch(() => {});
+    else setMyProfile(null);
+  }, [user]);
 
   const load = useCallback(
     async (which: FeedSort) => {
@@ -112,16 +124,16 @@ export default function CommunityScreen() {
       <AnimatedGradientBg />
       <View style={[styles.content, { paddingTop: insets.top + spacing.md }]}>
         <View style={styles.topRow}>
-          <PressableScale onPress={() => router.back()} style={styles.back} hitSlop={12}>
+          <PressableScale onPress={goBack} style={styles.back} hitSlop={12}>
             <Text style={styles.backText}>←</Text>
           </PressableScale>
           <Text style={styles.kicker}>Community</Text>
           {user ? (
-            <PressableScale onPress={() => useAuth.getState().signOut()} hitSlop={8} style={styles.signOut}>
-              <Text style={styles.signOutText}>Sign out</Text>
+            <PressableScale onPress={() => router.push('/community/profile')} hitSlop={8}>
+              <Avatar url={myProfile?.avatar_url} name={myProfile?.display_name} size={36} />
             </PressableScale>
           ) : (
-            <View style={{ width: 60 }} />
+            <View style={{ width: 36 }} />
           )}
         </View>
 

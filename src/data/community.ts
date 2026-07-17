@@ -133,3 +133,55 @@ export async function unpublishList(id: string): Promise<void> {
   const { error } = await client().from('published_lists').delete().eq('id', id);
   if (error) throw error;
 }
+
+export interface Profile {
+  id: string;
+  display_name: string | null;
+  avatar_url: string | null;
+}
+
+/** The signed-in viewer's own profile row, or null if signed out. */
+export async function fetchMyProfile(): Promise<Profile | null> {
+  const uid = await currentUserId();
+  if (!uid) return null;
+  const { data, error } = await client()
+    .from('profiles')
+    .select('id, display_name, avatar_url')
+    .eq('id', uid)
+    .maybeSingle();
+  if (error) throw error;
+  return (data as Profile) ?? null;
+}
+
+/**
+ * Is this display name free? Case-insensitive, ignoring the viewer's own row so
+ * re-saving your current name doesn't read as "taken". `name` is matched as a
+ * literal — callers pass a plain name, never a pattern.
+ */
+export async function isNameAvailable(name: string): Promise<boolean> {
+  const uid = await currentUserId();
+  const target = name.trim().toLowerCase();
+  // ilike narrows server-side, but `_`/`%` in the name are ILIKE wildcards, so
+  // re-check exact (case-insensitive) equality in JS. The DB unique index is
+  // still the authority on save.
+  const { data, error } = await client()
+    .from('profiles')
+    .select('id, display_name')
+    .ilike('display_name', name);
+  if (error) return true; // fall through to the DB unique index on save
+  return !(data ?? []).some(
+    (r) => (r as Profile).display_name?.trim().toLowerCase() === target && (r as Profile).id !== uid
+  );
+}
+
+/** Update the viewer's name and/or avatar. Throws a friendly error if the name
+ *  is taken (unique-violation 23505 from the DB index). */
+export async function updateProfile(patch: { display_name?: string; avatar_url?: string }): Promise<void> {
+  const uid = await currentUserId();
+  if (!uid) throw new Error('Sign in first.');
+  const { error } = await client().from('profiles').update(patch).eq('id', uid);
+  if (error) {
+    if (error.code === '23505') throw new Error('That name is already taken.');
+    throw error;
+  }
+}

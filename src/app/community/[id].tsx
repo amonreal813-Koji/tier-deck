@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Avatar } from '@/components/Avatar';
 import { ItemThumb } from '@/components/ItemThumb';
 import { PressableScale } from '@/components/PressableScale';
 import { useToast } from '@/components/Toast';
@@ -92,7 +93,11 @@ export default function CommunityListScreen() {
   return (
     <View style={styles.root}>
       <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
-        <PressableScale onPress={() => router.back()} style={styles.back} hitSlop={12}>
+        <PressableScale
+          onPress={() => (router.canGoBack() ? router.back() : router.replace('/community'))}
+          style={styles.back}
+          hitSlop={12}
+        >
           <Text style={styles.backText}>←</Text>
         </PressableScale>
         <PressableScale onPress={report} hitSlop={8} style={styles.reportBtn}>
@@ -103,9 +108,12 @@ export default function CommunityListScreen() {
       <ScrollView contentContainerStyle={{ paddingBottom: 160 }} showsVerticalScrollIndicator={false}>
         <View style={styles.body}>
           <Text style={styles.title}>{list.title}</Text>
-          <Text style={styles.meta}>
-            by {list.author?.display_name || 'a ranker'} · {list.like_count} {list.like_count === 1 ? 'like' : 'likes'}
-          </Text>
+          <View style={styles.byline}>
+            <Avatar url={list.author?.avatar_url} name={list.author?.display_name} size={28} />
+            <Text style={styles.meta}>
+              {list.author?.display_name || 'a ranker'} · {list.like_count} {list.like_count === 1 ? 'like' : 'likes'}
+            </Text>
+          </View>
           {list.tagline ? <Text style={styles.tagline}>{list.tagline}</Text> : null}
 
           {list.tiers.map((tier, i) => (
@@ -165,7 +173,8 @@ const styles = StyleSheet.create({
   reportText: { fontFamily: fonts.bodyMedium, fontSize: type.micro + 1, color: colors.textLow },
   body: { paddingHorizontal: spacing.lg, width: '100%', maxWidth: 820, alignSelf: 'center' },
   title: { fontFamily: fonts.display, fontSize: type.title, color: colors.textHi },
-  meta: { fontFamily: fonts.body, fontSize: type.caption, color: colors.textMid, marginTop: 4 },
+  byline: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginTop: 8 },
+  meta: { fontFamily: fonts.body, fontSize: type.caption, color: colors.textMid },
   tagline: { fontFamily: fonts.body, fontSize: type.caption, color: colors.textMid, marginTop: 10, marginBottom: 6 },
   tierRow: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.md, alignItems: 'flex-start' },
   badge: {

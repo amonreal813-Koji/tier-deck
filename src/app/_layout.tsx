@@ -72,6 +72,7 @@ export default function RootLayout() {
         <Stack.Screen name="premade/[premadeId]" />
         <Stack.Screen name="community/index" />
         <Stack.Screen name="community/[id]" />
+        <Stack.Screen name="community/profile" />
         <Stack.Screen name="import" />
         <Stack.Screen
           name="export/[listId]"

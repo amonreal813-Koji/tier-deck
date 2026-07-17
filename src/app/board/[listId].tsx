@@ -19,7 +19,10 @@ import { ConfettiBurst } from '@/components/Confetti';
 import { GlassPanel } from '@/components/GlassPanel';
 import { PressableScale } from '@/components/PressableScale';
 import { useToast } from '@/components/Toast';
+import { publishList } from '@/data/community';
 import type { Tier, TierItem } from '@/data/types';
+import { isCommunityEnabled } from '@/lib/supabase';
+import { useAuth } from '@/store/useAuth';
 import { DragProvider, useDrag } from '@/features/board/drag/DragContext';
 import { TierRow } from '@/features/board/TierRow';
 import { TierSettingsSheet } from '@/features/board/TierSettingsSheet';
@@ -352,6 +355,22 @@ export default function BoardScreen() {
     toast(`Deleted "${list.title}"`);
   };
 
+  const handlePublish = async () => {
+    close();
+    if (!useAuth.getState().user) {
+      toast('Sign in to publish — opening Community.');
+      router.push('/community');
+      return;
+    }
+    try {
+      await publishList(list);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      toast('Published to the community 🎉');
+    } catch {
+      toast('Could not publish. Try again.');
+    }
+  };
+
   return (
     <View style={styles.root}>
       <AnimatedGradientBg />
@@ -420,6 +439,9 @@ export default function BoardScreen() {
             icon: '📤',
             onPress: () => router.push(`/export/${list.id}`),
           },
+          ...(isCommunityEnabled
+            ? [{ label: 'Publish to community', icon: '🌐', onPress: handlePublish }]
+            : []),
           { label: 'Delete list', icon: '🗑️', destructive: true, onPress: handleDeleteList },
         ]}
       />

@@ -43,6 +43,20 @@ function fromBase64Url(param: string): string {
   return decodeURIComponent(escape(atob(padded)));
 }
 
+/** Flatten a saved list into the draft shape (tiers with inline items). Used
+ *  for both share links and publishing to the community backend. */
+export function listToDraft(list: TierList): ImportDraft {
+  return {
+    title: list.title,
+    category: list.category,
+    tiers: list.tiers.map((tier) => ({
+      label: tier.label,
+      color: tier.color,
+      items: tier.itemIds.map((id) => list.items[id]).filter(Boolean),
+    })),
+  };
+}
+
 /** Serialize a saved list into the `d` query param for an import link. */
 export function encodeListToParam(list: TierList): string {
   const payload: WirePayload = {

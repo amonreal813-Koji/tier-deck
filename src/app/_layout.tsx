@@ -17,6 +17,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { OnboardingOverlay } from '@/components/OnboardingOverlay';
 import { ToastHost } from '@/components/Toast';
+import { useAuth } from '@/store/useAuth';
 import { useListsStore } from '@/store/useListsStore';
 import { usePremadeEdits } from '@/store/usePremadeEdits';
 import { colors } from '@/theme/tokens';
@@ -34,11 +35,13 @@ export default function RootLayout() {
   const hydrated = useListsStore((s) => s.hydrated);
   const hydrate = useListsStore((s) => s.hydrate);
   const hydrateEdits = usePremadeEdits((s) => s.hydrate);
+  const initAuth = useAuth((s) => s.init);
 
   useEffect(() => {
     hydrate();
     hydrateEdits();
-  }, [hydrate, hydrateEdits]);
+    initAuth();
+  }, [hydrate, hydrateEdits, initAuth]);
 
   const ready = fontsLoaded && hydrated;
 
@@ -67,6 +70,8 @@ export default function RootLayout() {
         <Stack.Screen name="create/search" />
         <Stack.Screen name="board/[listId]" />
         <Stack.Screen name="premade/[premadeId]" />
+        <Stack.Screen name="community/index" />
+        <Stack.Screen name="community/[id]" />
         <Stack.Screen name="import" />
         <Stack.Screen
           name="export/[listId]"

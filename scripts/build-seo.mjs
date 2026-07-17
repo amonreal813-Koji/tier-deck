@@ -192,7 +192,7 @@ ${list.basis ? `<div class="basis">${esc(list.basis)}</div>` : ''}
 <div class="ctawrap"><a class="cta" href="/app">✦ Disagree? Make your own →</a></div>
 ${tiers}
 ${hint ? `<p class="disc">As an Amazon Associate we may earn from qualifying purchases.</p>` : ''}
-<p class="foot">◆ Ranked on Tier Deck · <a href="/lists">browse all ${catalog.length} lists</a></p>
+<p class="foot">◆ Ranked on Tier Deck · <a href="/lists">browse all ${catalog.length} lists</a> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></p>
 </div></body></html>`;
 }
 
@@ -225,13 +225,124 @@ function indexHtml() {
 <p class="lede">${catalog.length} fact-checked rankings — tap in for the reasons behind every placement.</p>
 <div class="ctawrap"><a class="cta" href="/app">✦ Make your own tier list →</a></div>
 <div class="grid">${cards}</div>
-<p class="foot">◆ Tier Deck</p>
+<p class="foot">◆ Tier Deck · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></p>
 </div></body></html>`;
+}
+
+/**
+ * Legal pages. Bump LEGAL_UPDATED whenever the wording changes — it's hardcoded
+ * rather than new Date() so a routine rebuild doesn't churn the "last updated".
+ */
+const LEGAL_UPDATED = '16 July 2026';
+
+function legalHtml(title, desc, bodyHtml) {
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${esc(title)} — Tier Deck</title>
+<meta name="description" content="${esc(desc)}">
+<link rel="canonical" href="${BASE_URL}/${title.toLowerCase().replace(/\s+/g, '-')}">
+<style>${CSS}
+.legal h2{font-size:20px;margin:28px 0 8px;color:#EDEDF2}
+.legal p,.legal li{color:#C2C2D0;font-size:15px;line-height:1.7}
+.legal ul{padding-left:20px}
+.legal .upd{color:#8A8A9A;font-size:13px}
+</style></head><body><div class="wrap legal">
+<p class="top"><a href="/lists">← All tier lists</a> · <a href="/app">Open the app</a></p>
+<h1>${esc(title)}</h1>
+<p class="upd">Last updated: ${LEGAL_UPDATED}</p>
+${bodyHtml}
+<p class="foot">◆ Tier Deck · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></p>
+</div></body></html>`;
+}
+
+function privacyHtml() {
+  return legalHtml(
+    'Privacy Policy',
+    'What Tier Deck collects, why, and how to delete it.',
+    `<p>Tier Deck is a tier-list app. This policy explains exactly what we collect and why. Short version: you can use almost all of Tier Deck without an account, and we don't sell your data or run ad trackers.</p>
+
+<h2>If you don't sign in</h2>
+<p>Tier lists you create are stored <strong>only on your own device</strong>, in your browser or app storage. We never receive them. Clearing your browser data deletes them permanently — we cannot recover them.</p>
+
+<h2>If you sign in with Google</h2>
+<p>Signing in is optional, and only needed to publish lists or like other people's. When you do, we receive and store:</p>
+<ul>
+  <li>Your <strong>email address</strong>, <strong>display name</strong>, and <strong>profile picture URL</strong> from your Google account. We do not receive your Google password.</li>
+  <li>Any <strong>tier lists you publish</strong> (title and items) — these are public to anyone using Tier Deck.</li>
+  <li>Which lists you <strong>liked</strong>.</li>
+  <li>Any <strong>reports</strong> you file about other people's lists.</li>
+</ul>
+<p>Your display name and picture are shown publicly next to lists you publish. Your email address is never shown publicly.</p>
+
+<h2>Where it's stored</h2>
+<p>Accounts and published content are stored with <a href="https://supabase.com/privacy" rel="noopener" target="_blank">Supabase</a> (our database and login provider). The website is served by <a href="https://www.netlify.com/privacy/" rel="noopener" target="_blank">Netlify</a>. Both may process technical data such as your IP address to deliver the service.</p>
+
+<h2>Other services your browser contacts</h2>
+<p>To show artwork and search results, the app fetches data directly from public sources including Wikipedia, the iTunes Search API, TheMealDB, TheCocktailDB, Open Library, Jikan, and (optionally) TMDB and RAWG. Because these requests come from your browser, those services can see your IP address. We don't send them your identity.</p>
+
+<h2>Affiliate links</h2>
+<p>Some product lists include "Shop" links to retailers such as Amazon. These carry an affiliate tag, so we may earn a commission if you buy something. Following one of those links takes you to the retailer, who then handles your data under their own privacy policy. As an Amazon Associate we earn from qualifying purchases.</p>
+
+<h2>Analytics and ads</h2>
+<p>We don't run advertising networks or third-party analytics trackers on this site.</p>
+
+<h2>Deleting your data</h2>
+<p>You can unpublish any list you posted from within the app. To delete your account and everything attached to it, email us and we'll remove it.</p>
+
+<h2>Children</h2>
+<p>Tier Deck isn't directed at children under 13, and we don't knowingly collect their data.</p>
+
+<h2>Changes</h2>
+<p>If this policy changes materially, we'll update the date above.</p>
+
+<h2>Contact</h2>
+<p>Questions or deletion requests: <a href="mailto:kojitheog42@gmail.com">kojitheog42@gmail.com</a></p>`
+  );
+}
+
+function termsHtml() {
+  return legalHtml(
+    'Terms of Service',
+    'The rules for using Tier Deck.',
+    `<p>By using Tier Deck you agree to these terms. They're intentionally short and plain.</p>
+
+<h2>What Tier Deck is</h2>
+<p>A free app for making and sharing tier lists. Rankings in our curated lists are opinions and editorial judgments — not statements of fact.</p>
+
+<h2>Your content</h2>
+<p>You keep ownership of the tier lists you create. By publishing a list to the community, you grant us permission to display and distribute it within Tier Deck. You're responsible for what you publish, and you confirm you have the right to publish it.</p>
+
+<h2>What you may not publish</h2>
+<ul>
+  <li>Illegal content, harassment, hate speech, or threats</li>
+  <li>Content that targets or exposes private individuals</li>
+  <li>Spam, scams, or malware</li>
+  <li>Material that infringes someone else's rights</li>
+</ul>
+<p>We may remove any published list and suspend accounts that break these rules. You can report a list from its page.</p>
+
+<h2>Third-party content</h2>
+<p>Item artwork and descriptions come from public sources such as Wikipedia and the iTunes Search API, and remain the property of their respective owners. Brand names and logos belong to their owners and appear for identification only.</p>
+
+<h2>Affiliate links</h2>
+<p>Some links to retailers are affiliate links, meaning we may earn a commission on purchases at no extra cost to you. As an Amazon Associate we earn from qualifying purchases.</p>
+
+<h2>No warranty</h2>
+<p>Tier Deck is provided "as is", without warranty of any kind. Lists you create without an account live only on your device — back up anything you care about, because we can't recover it. We're not liable for lost data or damages arising from use of the service.</p>
+
+<h2>Changes</h2>
+<p>We may update these terms; the date above reflects the latest version. Continuing to use Tier Deck means you accept the current terms.</p>
+
+<h2>Contact</h2>
+<p><a href="mailto:kojitheog42@gmail.com">kojitheog42@gmail.com</a></p>`
+  );
 }
 
 function sitemap() {
   // Root redirects to /app, so the crawlable hub is /lists (not "").
-  const urls = ['lists', ...catalog.map((l) => l.id)].map((u) => `<url><loc>${BASE_URL}/${u}</loc></url>`).join('');
+  const urls = ['lists', 'privacy', 'terms', ...catalog.map((l) => l.id)]
+    .map((u) => `<url><loc>${BASE_URL}/${u}</loc></url>`)
+    .join('');
   return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`;
 }
 
@@ -249,6 +360,11 @@ for (const list of catalog) {
 fs.writeFileSync(path.join(OUT, 'index.html'), indexHtml());
 fs.mkdirSync(path.join(OUT, 'lists'), { recursive: true });
 fs.writeFileSync(path.join(OUT, 'lists', 'index.html'), indexHtml());
+// Legal pages — Google requires a public privacy policy to publish the OAuth app.
+for (const [dir, html] of [['privacy', privacyHtml()], ['terms', termsHtml()]]) {
+  fs.mkdirSync(path.join(OUT, dir), { recursive: true });
+  fs.writeFileSync(path.join(OUT, dir, 'index.html'), html);
+}
 fs.writeFileSync(path.join(OUT, 'sitemap.xml'), sitemap());
 fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${BASE_URL}/sitemap.xml\n`);
 const resolved = Object.values(cache).filter(Boolean).length;

@@ -12,6 +12,7 @@ import { useToast } from '@/components/Toast';
 import { heroArtFor, itemNamesOf, premadeLists } from '@/data/premade';
 import type { PremadeList } from '@/data/premade/types';
 import type { Category, TierList } from '@/data/types';
+import { isCommunityEnabled } from '@/lib/supabase';
 import { FAB } from '@/features/home/FAB';
 import { GridListCard, type Strip } from '@/features/home/GridListCard';
 import { useListsStore } from '@/store/useListsStore';
@@ -300,6 +301,20 @@ export default function HomeScreen() {
             })}
           </ScrollView>
 
+          {/* Community — only when the backend is configured */}
+          {isCommunityEnabled ? (
+            <PressableScale onPress={() => router.push('/community')} style={{ marginBottom: spacing.lg }}>
+              <View style={styles.communityBanner}>
+                <Text style={styles.communityGlyph}>🌐</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.communityTitle}>Community</Text>
+                  <Text style={styles.communitySub}>See what everyone's ranking — like & publish</Text>
+                </View>
+                <Text style={styles.communityArrow}>→</Text>
+              </View>
+            </PressableScale>
+          ) : null}
+
           {/* The Consensus */}
           <View style={styles.sectionHead}>
             <Text style={styles.sectionTitle}>The Consensus</Text>
@@ -508,6 +523,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: spacing.sm,
   },
+  communityBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    padding: spacing.md,
+    borderRadius: radii.panel,
+    backgroundColor: withAlpha('#4CC9F0', 0.1),
+    borderWidth: 1,
+    borderColor: withAlpha('#4CC9F0', 0.35),
+  },
+  communityGlyph: { fontSize: 26 },
+  communityTitle: { fontFamily: fonts.displayMedium, fontSize: type.heading, color: colors.textHi },
+  communitySub: { fontFamily: fonts.body, fontSize: type.caption, color: colors.textMid, marginTop: 2 },
+  communityArrow: { fontSize: 20, color: '#7FD8F5' },
   shelfTitle: { fontFamily: fonts.displayMedium, fontSize: type.heading, color: colors.textHi },
   shelfSeeAll: { fontFamily: fonts.bodySemiBold, fontSize: type.micro + 1, color: '#B9A5FF' },
   seeAllCard: {

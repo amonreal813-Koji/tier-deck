@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -12,7 +12,10 @@ import { useToast } from '@/components/Toast';
 import { heroArtFor, itemNamesOf, premadeLists } from '@/data/premade';
 import type { PremadeList } from '@/data/premade/types';
 import type { Category, TierList } from '@/data/types';
+import { Avatar } from '@/components/Avatar';
+import { fetchMyProfile, type Profile } from '@/data/community';
 import { isCommunityEnabled } from '@/lib/supabase';
+import { useAuth } from '@/store/useAuth';
 import { FAB } from '@/features/home/FAB';
 import { GridListCard, type Strip } from '@/features/home/GridListCard';
 import { useListsStore } from '@/store/useListsStore';
@@ -140,6 +143,13 @@ export default function HomeScreen() {
   const upsertList = useListsStore((s) => s.upsertList);
   const toast = useToast((s) => s.show);
 
+  const communityUser = useAuth((s) => s.user);
+  const [homeProfile, setHomeProfile] = useState<Profile | null>(null);
+  useEffect(() => {
+    if (isCommunityEnabled && communityUser) fetchMyProfile().then(setHomeProfile).catch(() => {});
+    else setHomeProfile(null);
+  }, [communityUser]);
+
   const [query, setQuery] = useState('');
   const [activeCat, setActiveCat] = useState<Category | 'all'>('all');
   const [expanded, setExpanded] = useState(false);
@@ -247,6 +257,19 @@ export default function HomeScreen() {
             <PressableScale onPress={surpriseMe} style={styles.dice} accessibilityLabel="Surprise me">
               <Text style={styles.diceText}>🎲</Text>
             </PressableScale>
+            {isCommunityEnabled ? (
+              <PressableScale
+                onPress={() => router.push(communityUser ? '/community/profile' : '/community')}
+                style={styles.account}
+                accessibilityLabel="Account"
+              >
+                {communityUser ? (
+                  <Avatar url={homeProfile?.avatar_url} name={homeProfile?.display_name} size={44} />
+                ) : (
+                  <Text style={styles.diceText}>👤</Text>
+                )}
+              </PressableScale>
+            ) : null}
           </View>
 
           {/* Fuzzy search */}
@@ -456,7 +479,11 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
-  headerRow: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: spacing.lg },
+  headerRow: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm, marginBottom: spacing.lg },
+  account: {
+    width: 44, height: 44, borderRadius: 22, backgroundColor: colors.surface,
+    borderWidth: 1, borderColor: colors.surfaceBorder, alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+  },
   title: { fontFamily: fonts.display, fontSize: type.display, color: colors.textHi },
   tagline: { fontFamily: fonts.body, fontSize: type.body, color: colors.textMid, marginTop: 4 },
   dice: {

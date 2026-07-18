@@ -8,8 +8,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Avatar } from '@/components/Avatar';
 import { PressableScale } from '@/components/PressableScale';
 import { useToast } from '@/components/Toast';
-import { AVATAR_OPTIONS } from '@/data/avatars';
-import { fetchMyProfile, isNameAvailable, updateProfile } from '@/data/community';
+import { AVATAR_EMOJIS, AVATAR_IMAGES } from '@/data/avatars';
+import {
+  fetchMyProfile,
+  fetchMyPublished,
+  isNameAvailable,
+  unpublishList,
+  updateProfile,
+  type PublishedList,
+} from '@/data/community';
 import { useAuth } from '@/store/useAuth';
 import { withAlpha } from '@/theme/tierColors';
 import { colors, fonts, radii, spacing, type } from '@/theme/tokens';
@@ -36,13 +43,18 @@ export default function ProfileScreen() {
   const [initialAvatar, setInitialAvatar] = useState<string | null>(null);
   const [nameState, setNameState] = useState<NameState>({ status: 'idle' });
   const [saving, setSaving] = useState(false);
+  const [mine, setMine] = useState<PublishedList[]>([]);
   const checkRef = useRef(0);
 
-  // Google photo first (if any), then the curated set — de-duplicated.
-  const options = useMemo(() => {
-    const list = googlePhoto ? [googlePhoto, ...AVATAR_OPTIONS] : AVATAR_OPTIONS;
-    return Array.from(new Set(list));
-  }, [googlePhoto]);
+  const imageOptions = useMemo(
+    () => (googlePhoto ? [googlePhoto, ...AVATAR_IMAGES] : AVATAR_IMAGES),
+    [googlePhoto]
+  );
+
+  const stats = useMemo(() => {
+    const likes = mine.reduce((n, l) => n + (l.like_count || 0), 0);
+    return { lists: mine.length, likes };
+  }, [mine]);
 
   useEffect(() => {
     fetchMyProfile()
@@ -54,9 +66,9 @@ export default function ProfileScreen() {
         setInitialAvatar(p.avatar_url ?? null);
       })
       .catch(() => {});
+    fetchMyPublished().then(setMine).catch(() => {});
   }, []);
 
-  // Validate + check availability as the user types (debounced).
   useEffect(() => {
     const trimmed = name.trim();
     if (trimmed === initialName) {
@@ -72,7 +84,7 @@ export default function ProfileScreen() {
     const token = ++checkRef.current;
     const t = setTimeout(async () => {
       const free = await isNameAvailable(trimmed);
-      if (token !== checkRef.current) return; // superseded
+      if (token !== checkRef.current) return;
       setNameState(free ? { status: 'ok' } : { status: 'error', message: 'That name is already taken.' });
     }, 400);
     return () => clearTimeout(t);
@@ -81,29 +93,35 @@ export default function ProfileScreen() {
   const nameChanged = name.trim() !== initialName;
   const avatarChanged = avatar !== initialAvatar;
   const canSave =
-    !saving &&
-    (nameChanged || avatarChanged) &&
-    nameState.status !== 'checking' &&
-    nameState.status !== 'error';
+    !saving && (nameChanged || avatarChanged) && nameState.status !== 'checking' && nameState.status !== 'error';
 
   const save = async () => {
     if (saving) return;
     const patch: { display_name?: string; avatar_url?: string } = {};
     if (nameChanged) patch.display_name = name.trim();
     if (avatarChanged && avatar) patch.avatar_url = avatar;
-    if (Object.keys(patch).length === 0) {
-      router.back();
-      return;
-    }
+    if (Object.keys(patch).length === 0) return;
     setSaving(true);
     try {
       await updateProfile(patch);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      toast('Profile updated ✨');
-      router.back();
+      setInitialName(name.trim());
+      setInitialAvatar(avatar);
+      toast('Saved ✨');
     } catch (e) {
       toast(e instanceof Error ? e.message : 'Could not save. Try again.');
-      setSaving(false);
+    }
+    setSaving(false);
+  };
+
+  const doUnpublish = async (l: PublishedList) => {
+    try {
+      await unpublishList(l.id);
+      setMine((m) => m.filter((x) => x.id !== l.id));
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      toast('Removed from community');
+    } catch {
+      toast('Could not remove. Try again.');
     }
   };
 
@@ -121,22 +139,47 @@ export default function ProfileScreen() {
           ? nameState.message
           : ' ';
 
+  const AvatarTile = ({ opt }: { opt: string }) => (
+    <PressableScale
+      onPress={() => {
+        Haptics.selectionAsync();
+        setAvatar(opt);
+      }}
+      style={[styles.avatarWrap, avatar === opt && styles.avatarWrapOn]}
+    >
+      <Avatar url={opt} name={name} size={58} />
+    </PressableScale>
+  );
+
   return (
     <View style={styles.root}>
       <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
-        <PressableScale onPress={() => router.back()} style={styles.back} hitSlop={12}>
+        <PressableScale onPress={() => (router.canGoBack() ? router.back() : router.replace('/community'))} style={styles.back} hitSlop={12}>
           <Text style={styles.backText}>←</Text>
         </PressableScale>
-        <Text style={styles.kicker}>Edit profile</Text>
+        <Text style={styles.kicker}>Your profile</Text>
         <View style={{ width: 40 }} />
       </View>
 
       <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 120 }} showsVerticalScrollIndicator={false}>
         <View style={styles.body}>
-          <View style={styles.preview}>
-            <Avatar url={avatar} name={name} size={88} />
-          </View>
+          {/* Hero */}
+          <LinearGradient
+            colors={[withAlpha(colors.brandA, 0.28), withAlpha(colors.brandB, 0.14)]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.hero}
+          >
+            <Avatar url={avatar} name={name} size={92} />
+            <Text style={styles.heroName} numberOfLines={1}>{name || 'Your name'}</Text>
+            <View style={styles.statsRow}>
+              <Text style={styles.stat}><Text style={styles.statNum}>{stats.lists}</Text> published</Text>
+              <View style={styles.statDot} />
+              <Text style={styles.stat}><Text style={styles.statNum}>{stats.likes}</Text> likes</Text>
+            </View>
+          </LinearGradient>
 
+          {/* Name */}
           <Text style={styles.label}>Display name</Text>
           <TextInput
             value={name}
@@ -157,24 +200,34 @@ export default function ProfileScreen() {
             {hint}
           </Text>
 
-          <Text style={[styles.label, { marginTop: spacing.lg }]}>Picture</Text>
+          {/* Avatar picker */}
+          <Text style={[styles.label, { marginTop: spacing.lg }]}>Emoji</Text>
           <View style={styles.grid}>
-            {options.map((opt) => {
-              const active = avatar === opt;
-              return (
-                <PressableScale
-                  key={opt}
-                  onPress={() => {
-                    Haptics.selectionAsync();
-                    setAvatar(opt);
-                  }}
-                  style={[styles.avatarWrap, active && styles.avatarWrapOn]}
-                >
-                  <Avatar url={opt} name={name} size={60} />
-                </PressableScale>
-              );
-            })}
+            {AVATAR_EMOJIS.map((opt) => <AvatarTile key={opt} opt={opt} />)}
           </View>
+
+          <Text style={[styles.label, { marginTop: spacing.lg }]}>From our lists</Text>
+          <View style={styles.grid}>
+            {imageOptions.map((opt) => <AvatarTile key={opt} opt={opt} />)}
+          </View>
+
+          {/* Your published lists */}
+          {mine.length > 0 ? (
+            <>
+              <Text style={[styles.label, { marginTop: spacing.xl }]}>Your published lists</Text>
+              {mine.map((l) => (
+                <View key={l.id} style={styles.myRow}>
+                  <PressableScale onPress={() => router.push(`/community/${l.id}`)} style={{ flex: 1 }}>
+                    <Text style={styles.myTitle} numberOfLines={1}>{l.title}</Text>
+                    <Text style={styles.myMeta}>♥ {l.like_count}</Text>
+                  </PressableScale>
+                  <PressableScale onPress={() => doUnpublish(l)} hitSlop={8} style={styles.unpub}>
+                    <Text style={styles.unpubText}>Remove</Text>
+                  </PressableScale>
+                </View>
+              ))}
+            </>
+          ) : null}
 
           <PressableScale onPress={doSignOut} style={styles.signOut}>
             <Text style={styles.signOutText}>Sign out</Text>
@@ -183,14 +236,14 @@ export default function ProfileScreen() {
       </ScrollView>
 
       <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.md }]}>
-        <PressableScale onPress={save} disabled={!canSave} style={[{ width: '100%' }, !canSave && { opacity: 0.5 }]}>
+        <PressableScale onPress={save} disabled={!canSave} style={[{ width: '100%', maxWidth: 560 }, !canSave && { opacity: 0.5 }]}>
           <LinearGradient
             colors={[colors.brandA, colors.brandB]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.saveBtn}
           >
-            <Text style={styles.saveText}>{saving ? 'Saving…' : 'Save'}</Text>
+            <Text style={styles.saveText}>{saving ? 'Saving…' : canSave ? 'Save changes' : 'Saved'}</Text>
           </LinearGradient>
         </PressableScale>
       </View>
@@ -214,7 +267,16 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase', color: colors.textLow,
   },
   body: { paddingHorizontal: spacing.lg, width: '100%', maxWidth: 560, alignSelf: 'center' },
-  preview: { alignItems: 'center', marginVertical: spacing.lg },
+  hero: {
+    alignItems: 'center', gap: 8, paddingVertical: spacing.xl, paddingHorizontal: spacing.lg,
+    borderRadius: radii.panel, borderWidth: 1, borderColor: withAlpha(colors.brandA, 0.3),
+    marginTop: spacing.sm, marginBottom: spacing.lg,
+  },
+  heroName: { fontFamily: fonts.display, fontSize: type.title, color: colors.textHi, maxWidth: '100%' },
+  statsRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  stat: { fontFamily: fonts.body, fontSize: type.caption, color: colors.textMid },
+  statNum: { fontFamily: fonts.bodySemiBold, color: colors.textHi },
+  statDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: colors.textLow },
   label: { fontFamily: fonts.bodySemiBold, fontSize: type.caption, color: colors.textMid, marginBottom: spacing.sm },
   input: {
     fontFamily: fonts.bodyMedium, fontSize: type.body + 1, color: colors.textHi,
@@ -225,19 +287,30 @@ const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md },
   avatarWrap: { borderRadius: 32, borderWidth: 2, borderColor: 'transparent', padding: 2 },
   avatarWrapOn: { borderColor: colors.brandA },
+  myRow: {
+    flexDirection: 'row', alignItems: 'center', gap: spacing.md, marginBottom: spacing.sm,
+    padding: spacing.md, borderRadius: radii.card,
+    backgroundColor: 'rgba(255,255,255,0.04)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+  },
+  myTitle: { fontFamily: fonts.bodySemiBold, fontSize: type.body, color: colors.textHi },
+  myMeta: { fontFamily: fonts.body, fontSize: type.micro + 1, color: colors.textLow, marginTop: 2 },
+  unpub: {
+    paddingHorizontal: spacing.md, paddingVertical: spacing.xs + 3, borderRadius: radii.pill,
+    backgroundColor: withAlpha('#FF3B6B', 0.12), borderWidth: 1, borderColor: withAlpha('#FF3B6B', 0.4),
+  },
+  unpubText: { fontFamily: fonts.bodySemiBold, fontSize: type.micro + 1, color: '#FF8FA8' },
   signOut: {
     marginTop: spacing.xl, alignSelf: 'center', paddingHorizontal: spacing.lg, paddingVertical: spacing.sm + 2,
-    borderRadius: radii.pill, borderWidth: 1, borderColor: withAlpha('#FF3B6B', 0.4), backgroundColor: withAlpha('#FF3B6B', 0.1),
+    borderRadius: radii.pill, borderWidth: 1, borderColor: colors.surfaceBorder, backgroundColor: colors.surface,
   },
-  signOutText: { fontFamily: fonts.bodySemiBold, fontSize: type.caption, color: '#FF8FA8' },
+  signOutText: { fontFamily: fonts.bodySemiBold, fontSize: type.caption, color: colors.textMid },
   footer: {
     position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: spacing.lg, paddingTop: spacing.md,
-    backgroundColor: 'rgba(7,7,11,0.9)', borderTopWidth: 1, borderTopColor: colors.surfaceBorder,
-    alignItems: 'center',
+    backgroundColor: 'rgba(7,7,11,0.9)', borderTopWidth: 1, borderTopColor: colors.surfaceBorder, alignItems: 'center',
   },
   saveBtn: {
     height: 52, borderRadius: radii.pill, alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.25)', maxWidth: 560, width: '100%',
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.25)', width: '100%',
   },
   saveText: { fontFamily: fonts.bodySemiBold, fontSize: type.body, color: '#FFF' },
 });

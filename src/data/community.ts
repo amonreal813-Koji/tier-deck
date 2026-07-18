@@ -128,6 +128,19 @@ export async function reportList(listId: string, reason: string): Promise<void> 
   if (error) throw error;
 }
 
+/** The signed-in viewer's own published lists, newest first. */
+export async function fetchMyPublished(): Promise<PublishedList[]> {
+  const uid = await currentUserId();
+  if (!uid) return [];
+  const { data, error } = await client()
+    .from('published_lists')
+    .select('*, author:profiles!published_lists_author_id_fkey(display_name, avatar_url)')
+    .eq('author_id', uid)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as PublishedList[];
+}
+
 /** Delete one of the viewer's own published lists (RLS enforces ownership). */
 export async function unpublishList(id: string): Promise<void> {
   const { error } = await client().from('published_lists').delete().eq('id', id);

@@ -13,7 +13,7 @@
 #  2. expo export emits the full interactive app into seo-site/app (served
 #     at /app). Order matters — build-seo runs first because it clears seo-site/.
 [build]
-  command = "node scripts/build-seo.mjs && npx expo export -p web --output-dir seo-site/app"
+  command = "node scripts/build-seo.mjs && npx expo export -p web --output-dir seo-site/app && node scripts/finalize-app-meta.mjs"
   publish = "seo-site"
 
 [build.environment]

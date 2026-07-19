@@ -2288,8 +2288,8 @@
             "name": "The Coffee Bean & Tea Leaf",
             "reasoning": "One of the oldest and largest privately-held specialty coffee retailers in the US (founded 1963), with over 1,000 locations across 24 countries. Its Ice Blended drinks predate the Frappuccino, and the quality of its beans and teas consistently rivals higher-end chains, earning it a strong A.",
             "art": {
-              "type": "wiki",
-              "title": "The Coffee Bean & Tea Leaf"
+              "type": "logo",
+              "domain": "coffeebean.com"
             },
             "subtitle": "The original Ice Blended"
           },
@@ -2344,8 +2344,8 @@
             "name": "Café Coffee Day",
             "reasoning": "India's largest homegrown coffee chain and the pioneer of cafe culture in the country, which at its peak operated over 1,700 outlets nationwide. Reliable, affordable, and hugely culturally significant in its home market, though a sharp post-2019 contraction and financial turmoil keep it a solid B rather than higher.",
             "art": {
-              "type": "wiki",
-              "title": "Café Coffee Day"
+              "type": "logo",
+              "domain": "cafecoffeeday.com"
             },
             "subtitle": "India's cafe pioneer"
           }
@@ -2969,8 +2969,8 @@
             "name": "Magnum",
             "reasoning": "Chocolate-dipped bars with a genuinely thick, crackable Belgian chocolate shell over dense premium ice cream. The milk-fat chocolate-coating innovation (which lets a real-chocolate shell crack cleanly instead of shattering) and consistently high butterfat make it a global gold standard for a stick novelty.",
             "art": {
-              "type": "wiki",
-              "title": "Magnum (ice cream)"
+              "type": "logo",
+              "domain": "magnumicecream.com"
             },
             "subtitle": "The premium dipped bar done right"
           },
@@ -2979,8 +2979,8 @@
             "name": "Graeter's",
             "reasoning": "Cincinnati's French pot process yields incredibly dense, low-overrun ice cream with iconic giant chocolate chips. A cult favorite that rivals Jeni's for artisan credibility and arguably beats it on texture.",
             "art": {
-              "type": "wiki",
-              "title": "Graeter's"
+              "type": "logo",
+              "domain": "graeters.com"
             },
             "subtitle": "French pot craft with legendary chips"
           }
@@ -3071,8 +3071,8 @@
             "name": "Dreyer's",
             "reasoning": "Sold as Edy's in the eastern and midwestern US, it's a reliable, widely available mainstream carton. Solid Slow Churned line and dependable flavors, but firmly mid-tier next to premium competitors.",
             "art": {
-              "type": "wiki",
-              "title": "Dreyer's"
+              "type": "logo",
+              "domain": "dreyers.com"
             },
             "subtitle": "Edy's out east, everywhere's staple"
           },
@@ -3081,8 +3081,8 @@
             "name": "Wall's",
             "reasoning": "The global Heartbrand umbrella (Wall's in the UK) behind Cornetto and countless bars. Massive reach and dependable everyday novelties, but broadly mainstream rather than premium.",
             "art": {
-              "type": "wiki",
-              "title": "Wall's (ice cream)"
+              "type": "logo",
+              "domain": "wallsicecream.com"
             },
             "subtitle": "The global heart-logo everyman"
           }
@@ -3117,8 +3117,8 @@
             "name": "McDonald's McFlurry",
             "reasoning": "Ubiquitous and nostalgic soft-serve blended with mix-ins, but the notoriously broken ice cream machines and thin, airy base keep it firmly in convenience-tier territory.",
             "art": {
-              "type": "wiki",
-              "title": "McFlurry"
+              "type": "logo",
+              "domain": "mcdonalds.com"
             },
             "subtitle": "If the machine is working"
           }
@@ -3198,8 +3198,8 @@
             "name": "Air Jordan",
             "reasoning": "The most culturally dominant sneaker line ever made. Every Jordan retro release sells out, resale markets orbit around it, and it single-handedly built the modern sneaker economy. Nike sub-brand, but iconic enough to stand alone.",
             "art": {
-              "type": "wiki",
-              "title": "Air Jordan"
+              "type": "logo",
+              "domain": "nike.com"
             },
             "subtitle": "Nike's Jumpman dynasty that defined sneaker culture"
           }
@@ -3234,8 +3234,8 @@
             "name": "Salomon",
             "reasoning": "Trail-running pedigree turned fashion darling. The XT-6 and XT-4 crossed from mountains to runways via gorpcore, giving Salomon rare technical-plus-hype credibility. Genuinely excellent grip and comfort.",
             "art": {
-              "type": "wiki",
-              "title": "Salomon Group"
+              "type": "logo",
+              "domain": "salomon.com"
             },
             "subtitle": "Trail tech that became a streetwear obsession"
           },
@@ -3300,8 +3300,8 @@
             "name": "Timberland",
             "reasoning": "The yellow boot is a genuine icon of hip-hop and workwear culture, but Timberland is far more a boot brand than a sneaker brand. Great heritage, narrow sneaker relevance.",
             "art": {
-              "type": "wiki",
-              "title": "Timberland (company)"
+              "type": "logo",
+              "domain": "timberland.com"
             },
             "subtitle": "Iconic yellow boot, thinner on sneakers"
           }
@@ -3346,8 +3346,8 @@
             "name": "Diadora",
             "reasoning": "Storied Italian maker with real tennis and football heritage and quality craftsmanship, but limited modern reach outside Europe and collectors. Solid product, low mainstream mindshare.",
             "art": {
-              "type": "wiki",
-              "title": "Diadora"
+              "type": "logo",
+              "domain": "diadora.com"
             },
             "subtitle": "Italian heritage with a modest footprint"
           }
@@ -3595,8 +3595,8 @@
             "name": "Nokia",
             "reasoning": "Once the world's largest phone maker, the brand now lives on through HMD Global with clean Android One software and legendary durability nostalgia. Reliable and affordable, but no longer a flagship contender.",
             "art": {
-              "type": "wiki",
-              "title": "Nokia"
+              "type": "logo",
+              "domain": "nokia.com"
             },
             "subtitle": "The indestructible legend HMD keeps alive"
           }
@@ -3877,8 +3877,8 @@
             "subtitle": "Defunct / 2020",
             "reasoning": "The most notorious flop in streaming history: it raised about $1.75 billion, launched in April 2020 and shut down roughly six months later after wildly missing its subscriber targets, a textbook consensus failure.",
             "art": {
-              "type": "wiki",
-              "title": "Quibi"
+              "type": "logo",
+              "domain": "quibi.com"
             }
           }
         ]
@@ -5602,8 +5602,8 @@
             "name": "Advanced Micro Devices",
             "reasoning": "The only real x86 rival to Intel and now the credible GPU challenger to Nvidia. Ryzen and EPYC took massive server and desktop share, and its MI-series accelerators are the leading alternative for AI datacenters. One of the great corporate turnarounds in tech.",
             "art": {
-              "type": "wiki",
-              "title": "AMD"
+              "type": "logo",
+              "domain": "amd.com"
             },
             "subtitle": "The comeback chipmaker"
           },
@@ -5612,8 +5612,8 @@
             "name": "Broadcom",
             "reasoning": "A quiet semiconductor and infrastructure-software behemoth powering networking, custom AI silicon for hyperscalers, and (via VMware) enterprise virtualization. Consistently one of the most valuable and profitable chip companies in the world.",
             "art": {
-              "type": "wiki",
-              "title": "Broadcom"
+              "type": "logo",
+              "domain": "broadcom.com"
             },
             "subtitle": "The trillion-dollar giant nobody talks about"
           }
@@ -5658,8 +5658,8 @@
             "name": "Tesla",
             "reasoning": "Redefined the EV market and forced the entire auto industry to electrify, while its energy storage, software, and self-driving ambitions make it as much a tech company as a carmaker. Volatile but undeniably category-defining.",
             "art": {
-              "type": "wiki",
-              "title": "Tesla, Inc."
+              "type": "logo",
+              "domain": "tesla.com"
             },
             "subtitle": "Cars as software on wheels"
           },
@@ -5668,8 +5668,8 @@
             "name": "Oracle",
             "reasoning": "Dominant in enterprise databases for decades and a surprising late winner in cloud, with OCI landing major AI-training contracts. Deeply entrenched in the backends of banks, governments, and Fortune 500s.",
             "art": {
-              "type": "wiki",
-              "title": "Oracle Corporation"
+              "type": "logo",
+              "domain": "oracle.com"
             },
             "subtitle": "The database that runs the enterprise"
           },
@@ -5678,8 +5678,8 @@
             "name": "Adobe",
             "reasoning": "A near-monopoly on creative software: Photoshop, Premiere, and PDF are industry defaults, and the Creative Cloud subscription model prints reliable revenue. Now racing to embed generative AI across its suite.",
             "art": {
-              "type": "wiki",
-              "title": "Adobe Inc."
+              "type": "logo",
+              "domain": "adobe.com"
             },
             "subtitle": "Owner of the creative toolbox"
           }
@@ -5724,8 +5724,8 @@
             "name": "Salesforce",
             "reasoning": "The company that made cloud SaaS mainstream and still leads enterprise CRM. Sprawling acquisitions (Slack, Tableau, MuleSoft) built a broad platform, though bloat and pricing keep it out of the top tier.",
             "art": {
-              "type": "wiki",
-              "title": "Salesforce"
+              "type": "logo",
+              "domain": "salesforce.com"
             },
             "subtitle": "The original cloud CRM"
           }
@@ -10108,8 +10108,8 @@
             "name": "Cheez-It",
             "reasoning": "The definitive cheese cracker: intensely savory, addictively crunchy, and impossible to stop eating. Near-universal appeal and a deep bench of great flavors earn it top-tier status.",
             "art": {
-              "type": "wiki",
-              "title": "Cheez-It"
+              "type": "logo",
+              "domain": "cheezit.com"
             },
             "subtitle": "The cheese cracker champion"
           }
@@ -10154,8 +10154,8 @@
             "name": "Cape Cod Potato Chips",
             "reasoning": "Premium kettle-cooked chips with a satisfying crunch and clean, non-greasy flavor that consistently rank among the best mass-market kettle chips. Just shy of S for higher price and limited flavor lineup.",
             "art": {
-              "type": "wiki",
-              "title": "Cape Cod Potato Chips"
+              "type": "logo",
+              "domain": "capecodchips.com"
             },
             "subtitle": "Kettle-cooked, coastal crunch"
           }
@@ -10200,8 +10200,8 @@
             "name": "Funyuns",
             "reasoning": "Iconic onion-flavored ring snack from Frito-Lay with a devoted cult following and instantly recognizable taste, but the polarizing onion flavor and one-note appeal keep it out of the top tiers.",
             "art": {
-              "type": "wiki",
-              "title": "Funyuns"
+              "type": "logo",
+              "domain": "funyuns.com"
             },
             "subtitle": "Onion rings, cult status"
           },
@@ -10210,8 +10210,8 @@
             "name": "Herr's",
             "reasoning": "Beloved Pennsylvania snack institution with a wide range of chips and cheese curls, solid regional loyalty and quality, but distribution and flavor consistency keep it mid-pack nationally.",
             "art": {
-              "type": "wiki",
-              "title": "Herr's Snacks"
+              "type": "logo",
+              "domain": "herrs.com"
             },
             "subtitle": "Philly snack royalty"
           }
@@ -10246,8 +10246,8 @@
             "name": "Chex Mix",
             "reasoning": "A snack-mix staple with nostalgic value and decent variety, but the uneven ratio of bland cereal pieces to the good bits (rye chips, pretzels) drags the overall experience down.",
             "art": {
-              "type": "wiki",
-              "title": "Chex Mix"
+              "type": "logo",
+              "domain": "chexmix.com"
             },
             "subtitle": "Great pieces, filler problem"
           },
@@ -10256,8 +10256,8 @@
             "name": "Bugles",
             "reasoning": "Fun cone-shaped corn snack with a light crunch and childhood fingertip-hat appeal, but the flavor is thin and forgettable compared to bolder competitors.",
             "art": {
-              "type": "wiki",
-              "title": "Bugles (snack)"
+              "type": "logo",
+              "domain": "bugles.com"
             },
             "subtitle": "Crunchy little cornucopias"
           }
@@ -10815,8 +10815,8 @@
             "name": "Raising Cane's",
             "reasoning": "Hyper-focused menu of chicken fingers, crinkle-cut fries, Texas toast, and the cult-favorite Cane's Sauce. Doing one thing exceptionally well drives fanatical loyalty and one of the fastest expansion rates in the category.",
             "art": {
-              "type": "wiki",
-              "title": "Raising Cane's Chicken Fingers"
+              "type": "logo",
+              "domain": "raisingcanes.com"
             },
             "subtitle": "One chicken finger meal, perfected"
           }
@@ -10861,8 +10861,8 @@
             "name": "Whataburger",
             "reasoning": "A Texas institution with genuine regional devotion, 24-hour service, and larger, made-to-order burgers. The orange-and-white A-frames and fresh-off-the-grill patties earn it near-mythic status among fans.",
             "art": {
-              "type": "wiki",
-              "title": "Whataburger"
+              "type": "logo",
+              "domain": "whataburger.com"
             },
             "subtitle": "Big Texas burgers, orange A-frames"
           },
@@ -10871,8 +10871,8 @@
             "name": "Portillo's",
             "reasoning": "Chicago-style hot dogs, Italian beef, and chocolate cake shakes served with genuine character. A regional icon whose national expansion is met with lines out the door.",
             "art": {
-              "type": "wiki",
-              "title": "Portillo's Restaurants"
+              "type": "logo",
+              "domain": "portillos.com"
             },
             "subtitle": "Chicago dogs and Italian beef"
           }
@@ -10917,8 +10917,8 @@
             "name": "Qdoba",
             "reasoning": "A solid Chipotle alternative whose key edge is free guacamole and queso. Competent build-your-own burritos and bowls, but lacks the distinct identity to rise above the pack.",
             "art": {
-              "type": "wiki",
-              "title": "Qdoba"
+              "type": "logo",
+              "domain": "qdoba.com"
             },
             "subtitle": "The other burrito line"
           },
@@ -10927,8 +10927,8 @@
             "name": "Jimmy John's",
             "reasoning": "Genuinely fast subs with fresh-baked bread and the freaky-fast delivery gimmick. Reliable and quick, but a thin, no-frills sandwich keeps it out of the top tiers.",
             "art": {
-              "type": "wiki",
-              "title": "Jimmy John's"
+              "type": "logo",
+              "domain": "jimmyjohns.com"
             },
             "subtitle": "Freaky fast, freaky thin"
           }
@@ -10979,8 +10979,8 @@
             "name": "Subway",
             "reasoning": "Ubiquity is its only strength; the bread and fillings are mediocre, quality has slid for years, and the value proposition has eroded. A shadow of its former dominance.",
             "art": {
-              "type": "wiki",
-              "title": "Subway (restaurant)"
+              "type": "logo",
+              "domain": "subway.com"
             },
             "subtitle": "Ubiquitous but faded"
           }
@@ -11771,8 +11771,8 @@
             "name": "Prada",
             "reasoning": "Italian luxury house that defines high fashion; its Milanese craftsmanship, runway influence, and iconic nylon and leather goods place it firmly among the elite alongside Chanel and Louis Vuitton.",
             "art": {
-              "type": "wiki",
-              "title": "Prada"
+              "type": "logo",
+              "domain": "prada.com"
             },
             "subtitle": "Milanese luxury, effortlessly iconic"
           }
@@ -11807,8 +11807,8 @@
             "name": "Ralph Lauren Corporation",
             "reasoning": "The definitive American heritage brand; Polo, the Purple Label, and the pony logo built a timeless preppy aesthetic that spans everyday polos to red-carpet tailoring with remarkable consistency.",
             "art": {
-              "type": "wiki",
-              "title": "Ralph Lauren Corporation"
+              "type": "logo",
+              "domain": "ralphlauren.com"
             },
             "subtitle": "American preppy, timeless polo"
           },
@@ -11853,8 +11853,8 @@
             "name": "Levi Strauss & Co.",
             "reasoning": "Pioneer of the riveted blue jean and a genuine cultural staple; the 501 is an all-time classic, though quality has grown inconsistent across mass-market lines over the decades.",
             "art": {
-              "type": "wiki",
-              "title": "Levi Strauss & Co."
+              "type": "logo",
+              "domain": "levi.com"
             },
             "subtitle": "The original blue jean"
           },
@@ -11863,8 +11863,8 @@
             "name": "Supreme (brand)",
             "reasoning": "A streetwear phenomenon with unmatched hype and resale culture, but the box-logo markup and drop-model scarcity make value uneven despite its huge influence.",
             "art": {
-              "type": "wiki",
-              "title": "Supreme (brand)"
+              "type": "logo",
+              "domain": "supremenewyork.com"
             },
             "subtitle": "Box logo, endless hype"
           }
@@ -11899,8 +11899,8 @@
             "name": "Balenciaga",
             "reasoning": "Undeniably influential on modern luxury streetwear, but sky-high prices on deliberately distressed pieces and repeated PR controversies drag down an otherwise storied house.",
             "art": {
-              "type": "wiki",
-              "title": "Balenciaga"
+              "type": "logo",
+              "domain": "balenciaga.com"
             },
             "subtitle": "Luxury provocation, divisive pricing"
           }
@@ -11961,8 +11961,8 @@
             "subtitle": "Skytrax World's Best Airline 2025",
             "reasoning": "Named Skytrax World's Best Airline for a record ninth time at the 2025 World Airline Awards, where its Qsuite business class again won World's Best Business Class.",
             "art": {
-              "type": "wiki",
-              "title": "Qatar Airways"
+              "type": "logo",
+              "domain": "qatarairways.com"
             }
           },
           {
@@ -11997,8 +11997,8 @@
             "subtitle": "Skytrax #3, top-3 for safety",
             "reasoning": "Finished #3 in the 2025 Skytrax World Airline Awards, won World's Best In-flight Entertainment, and shares third place on AirlineRatings.com's 2025 safest full-service list.",
             "art": {
-              "type": "wiki",
-              "title": "Cathay Pacific"
+              "type": "logo",
+              "domain": "cathaypacific.com"
             }
           },
           {
@@ -12007,8 +12007,8 @@
             "subtitle": "Skytrax #5, 5-Star Airline",
             "reasoning": "Ranked #5 worldwide by Skytrax in 2025 and one of only a handful of certified 5-Star Airlines, consistently praised for cabin cleanliness and service.",
             "art": {
-              "type": "wiki",
-              "title": "All Nippon Airways"
+              "type": "logo",
+              "domain": "ana.co.jp"
             }
           },
           {
@@ -12017,8 +12017,8 @@
             "subtitle": "2nd safest airline in the world 2025",
             "reasoning": "Ranked the world's 2nd safest airline by AirlineRatings.com for 2025 (just 1.5 points behind Air New Zealand) and famous for never having lost a jet aircraft to a fatal accident.",
             "art": {
-              "type": "wiki",
-              "title": "Qantas"
+              "type": "logo",
+              "domain": "qantas.com"
             }
           },
           {
@@ -12026,8 +12026,8 @@
             "name": "Turkish Airlines",
             "reasoning": "Flies to more countries than any other carrier, with a strong long-haul business class, respected Do & Co catering, and a generous free Istanbul stopover program. Consistent Skytrax accolades keep it just below the elite Gulf/Asian tier.",
             "art": {
-              "type": "wiki",
-              "title": "Turkish Airlines"
+              "type": "logo",
+              "domain": "turkishairlines.com"
             },
             "subtitle": "World's largest network, standout catering"
           },
@@ -12036,8 +12036,8 @@
             "name": "Japan Airlines",
             "reasoning": "JAL matches ANA for legendary Japanese service, punctuality, and clean cabins, with a strong Sky Suite business class. Just a notch below the very top only because its network isn't as vast as the Gulf giants.",
             "art": {
-              "type": "wiki",
-              "title": "Japan Airlines"
+              "type": "logo",
+              "domain": "jal.co.jp"
             },
             "subtitle": "Impeccable Japanese service and reliability"
           }
@@ -12053,8 +12053,8 @@
             "subtitle": "World's safest airline 2025",
             "reasoning": "Named the world's safest airline by AirlineRatings.com for 2025, credited to its younger fleet and rigorous training, though it ranks lower on Skytrax service polls.",
             "art": {
-              "type": "wiki",
-              "title": "Air New Zealand"
+              "type": "logo",
+              "domain": "airnewzealand.co.nz"
             }
           },
           {
@@ -12072,8 +12072,8 @@
             "name": "Lufthansa",
             "reasoning": "Germany's flag carrier is reliable and safe with a solid premium product and the excellent First Class Terminal in Frankfurt, but hard-product aging, frequent strikes, and hub congestion hold it to a strong-but-unspectacular tier.",
             "art": {
-              "type": "wiki",
-              "title": "Lufthansa"
+              "type": "logo",
+              "domain": "lufthansa.com"
             },
             "subtitle": "Solid, punctual German flag carrier"
           },
@@ -12082,8 +12082,8 @@
             "name": "Air France",
             "reasoning": "A refined flag carrier with a genuinely excellent La Premiere first class and strong French dining, but inconsistent economy, an aging fleet in spots, and CDG hub friction keep it mid-tier overall.",
             "art": {
-              "type": "wiki",
-              "title": "Air France"
+              "type": "logo",
+              "domain": "airfrance.com"
             },
             "subtitle": "Chic premium, uneven economy"
           },
@@ -12092,8 +12092,8 @@
             "name": "JetBlue",
             "reasoning": "A US low-cost standout offering roomy seats, free Wi-Fi, seatback screens, and the genuinely premium Mint business class on transcon and transatlantic routes, though operational reliability has wobbled in recent years.",
             "art": {
-              "type": "wiki",
-              "title": "JetBlue Airways"
+              "type": "logo",
+              "domain": "jetblue.com"
             },
             "subtitle": "Best-value US carrier, great Mint cabin"
           }
@@ -12144,8 +12144,8 @@
             "name": "Ryanair",
             "reasoning": "Europe's ultra-low-cost king moves enormous passenger volumes cheaply and profitably, but aggressive fees, cramped seats, and a no-frills, sometimes hostile experience make it a means-to-an-end rather than a pleasure to fly.",
             "art": {
-              "type": "wiki",
-              "title": "Ryanair"
+              "type": "logo",
+              "domain": "ryanair.com"
             },
             "subtitle": "Cheap fares, brutal fees and comfort"
           }
@@ -14425,8 +14425,8 @@
             "name": "Lagavulin",
             "reasoning": "The definitive Islay single malt, its 16 Year offering a rich, peaty smoke that set the standard for the region. Endlessly praised by whisky critics for balance.",
             "art": {
-              "type": "wiki",
-              "title": "Lagavulin distillery"
+              "type": "logo",
+              "domain": "lagavulin.com"
             },
             "subtitle": "Islay Single Malt Scotch"
           },
@@ -14435,8 +14435,8 @@
             "name": "Redbreast",
             "reasoning": "The flagship of single pot still Irish whiskey, its 12 Year is widely regarded as one of the best-value premium whiskeys in the world. Full-bodied, sherried, and consistently excellent.",
             "art": {
-              "type": "wiki",
-              "title": "Redbreast (whiskey)"
+              "type": "logo",
+              "domain": "redbreastwhiskey.com"
             },
             "subtitle": "Single Pot Still Irish"
           }
@@ -14481,8 +14481,8 @@
             "name": "Nikka",
             "reasoning": "Japanese whisky pioneer whose blends like From the Barrel and Taketsuru deliver serious complexity. A driving force behind Japan's global whisky reputation.",
             "art": {
-              "type": "wiki",
-              "title": "Nikka Whisky Distilling"
+              "type": "logo",
+              "domain": "nikka.com"
             },
             "subtitle": "Japanese Whisky"
           },
@@ -14563,8 +14563,8 @@
             "name": "Chivas Regal",
             "reasoning": "A smooth but forgettable blended Scotch that trades on prestige branding more than distinction in the glass. Perfectly fine, rarely exciting.",
             "art": {
-              "type": "wiki",
-              "title": "Chivas Regal"
+              "type": "logo",
+              "domain": "chivas.com"
             },
             "subtitle": "Blended Scotch"
           },
@@ -14583,8 +14583,8 @@
             "name": "Dewar's White Label",
             "reasoning": "An ultra-mass-market blended Scotch that's clean but characterless, existing mostly to fill highballs at the well. Rarely the reason anyone orders.",
             "art": {
-              "type": "wiki",
-              "title": "Dewar's"
+              "type": "logo",
+              "domain": "dewars.com"
             },
             "subtitle": "Blended Scotch"
           }
@@ -14599,8 +14599,8 @@
             "name": "Cutty Sark",
             "reasoning": "A light, pale blended Scotch designed for cheap highballs; thin and grainy with little to recommend it neat. A relic of the mixer era.",
             "art": {
-              "type": "wiki",
-              "title": "Cutty Sark (whisky)"
+              "type": "logo",
+              "domain": "cutty-sark.com"
             },
             "subtitle": "Blended Scotch"
           }
@@ -14615,8 +14615,8 @@
             "name": "Fireball",
             "reasoning": "Cinnamon-flavored whisky liqueur at 33% ABV — closer to a candy shot than whiskey, and once recalled in several European countries over propylene glycol, an additive also used in antifreeze. A notorious hangover in a bottle.",
             "art": {
-              "type": "wiki",
-              "title": "Fireball Cinnamon Whisky"
+              "type": "logo",
+              "domain": "fireballwhisky.com"
             },
             "subtitle": "Cinnamon Whisky Liqueur"
           }

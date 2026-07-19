@@ -1092,8 +1092,8 @@
           "subtitle": "2013-2017 / short video",
           "reasoning": "Twitter shut down Vine in 2017; despite pioneering the 6-second looping-video format that shaped TikTok, it failed to monetize or retain creators, making it a defining flameout of the era.",
           "art": {
-            "type": "wiki",
-            "title": "Vine (service)"
+            "type": "logo",
+            "domain": "vine.co"
           }
         }
       },

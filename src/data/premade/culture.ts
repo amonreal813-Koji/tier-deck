@@ -160,28 +160,28 @@ export const socialMedia: PremadeList = {
         {
           id: 'facebook',
           name: 'Facebook',
-          art: { type: 'wiki', title: 'Facebook' },
+          art: { type: 'logo', domain: 'facebook.com' },
           reasoning:
             '~3 billion monthly users — the largest social network in human history and the app that defined the entire era. Whatever you think of it, nothing else is this big.',
         },
         {
           id: 'youtube',
           name: 'YouTube',
-          art: { type: 'wiki', title: 'YouTube' },
+          art: { type: 'logo', domain: 'youtube.com' },
           reasoning:
             "~2.5 billion users and the world's second-most-visited website. It didn't just host video — it invented the creator economy.",
         },
         {
           id: 'instagram',
           name: 'Instagram',
-          art: { type: 'wiki', title: 'Instagram' },
+          art: { type: 'logo', domain: 'instagram.com' },
           reasoning:
             '~2 billion users and the app that made the world visual — it reshaped photography, advertising, and self-image in a single decade.',
         },
         {
           id: 'whatsapp',
           name: 'WhatsApp',
-          art: { type: 'wiki', title: 'WhatsApp' },
+          art: { type: 'logo', domain: 'whatsapp.com' },
           reasoning:
             '~2 billion users and the default way entire countries text. Outside the U.S. its dominance over messaging is essentially total.',
         },
@@ -194,14 +194,14 @@ export const socialMedia: PremadeList = {
         {
           id: 'tiktok',
           name: 'TikTok',
-          art: { type: 'wiki', title: 'TikTok' },
+          art: { type: 'logo', domain: 'tiktok.com' },
           reasoning:
             'The fastest app ever to a billion users and the one everyone now copies — Reels and Shorts exist because of it. Only regulatory limbo keeps it out of S.',
         },
         {
           id: 'wechat',
           name: 'WeChat',
-          art: { type: 'wiki', title: 'WeChat' },
+          art: { type: 'logo', domain: 'wechat.com' },
           reasoning:
             "China's everything-app: chat, pay, shop, book, government services. A billion-plus people live inside it — arguably the most powerful app on Earth, just walled off from the West.",
         },
@@ -214,14 +214,14 @@ export const socialMedia: PremadeList = {
         {
           id: 'twitter',
           name: 'X (Twitter)',
-          art: { type: 'wiki', title: 'Twitter' },
+          art: { type: 'logo', domain: 'x.com' },
           reasoning:
             "Punches far above its user count on influence — it's where news breaks. But turbulent ownership and an exodus since 2022 make it the most volatile major platform.",
         },
         {
           id: 'reddit',
           name: 'Reddit',
-          art: { type: 'wiki', title: 'Reddit' },
+          art: { type: 'logo', domain: 'reddit.com' },
           reasoning:
             "'The front page of the internet' and the web's biggest forum — enormous cultural reach, and famously hard to monetize.",
         },
@@ -248,7 +248,7 @@ export const socialMedia: PremadeList = {
         {
           id: 'pinterest',
           name: 'Pinterest',
-          art: { type: 'wiki', title: 'Pinterest' },
+          art: { type: 'logo', domain: 'pinterest.com' },
           reasoning:
             'Quietly huge for planning and shopping, and culturally near-invisible next to the feeds above. The introvert of big social apps.',
         },
@@ -261,7 +261,7 @@ export const socialMedia: PremadeList = {
         {
           id: 'threads',
           name: 'Threads',
-          art: { type: 'wiki', title: 'Threads (social network)' },
+          art: { type: 'logo', domain: 'threads.com' },
           reasoning:
             'Launched to 100 million sign-ups in five days — the fastest ever — then most of them never came back. The definition of a hype crash.',
         },
@@ -274,7 +274,7 @@ export const socialMedia: PremadeList = {
         {
           id: 'googleplus',
           name: 'Google+',
-          art: { type: 'wiki', title: 'Google+' },
+          art: { type: 'logo', domain: 'plus.google.com' },
           reasoning:
             'Google forced it on everyone, nobody used it, and it shut down in 2019 after a data breach. The textbook social-media failure by a tech giant.',
         },

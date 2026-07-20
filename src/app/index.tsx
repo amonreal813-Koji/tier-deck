@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ActionSheet } from '@/components/ActionSheet';
 import { AnimatedGradientBg } from '@/components/AnimatedGradientBg';
+import { SlidingListsBackdrop } from '@/components/SlidingListsBackdrop';
 import { GlassPanel } from '@/components/GlassPanel';
 import { PressableScale } from '@/components/PressableScale';
 import { useToast } from '@/components/Toast';
@@ -235,6 +236,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.root}>
       <AnimatedGradientBg />
+      <SlidingListsBackdrop />
       <ScrollView
         contentContainerStyle={{ alignItems: 'center', paddingBottom: 140 }}
         showsVerticalScrollIndicator={false}

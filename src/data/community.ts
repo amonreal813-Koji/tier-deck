@@ -198,3 +198,64 @@ export async function updateProfile(patch: { display_name?: string; avatar_url?:
     throw error;
   }
 }
+
+/* ---------------- Prompts + consensus ---------------- */
+// A "prompt" is a curated list ranked by the community. prompt_id = the list id;
+// the items + art come from the app's bundled catalog. We store only scores.
+
+/** Top tier = 6 … bottom = 1, by tier position. Used to score a submitted board. */
+export function tierScore(tierIndex: number): number {
+  return Math.max(1, 6 - tierIndex);
+}
+
+export interface ConsensusItem {
+  item_id: string;
+  avg: number;
+  votes: number;
+}
+export interface Consensus {
+  participants: number;
+  items: ConsensusItem[];
+}
+
+/** Submit (or re-submit) the viewer's ranking for a prompt. `scored` is one
+ *  entry per PLACED item (unranked items are omitted and don't count). */
+export async function submitRanking(promptId: string, scored: { itemId: string; score: number }[]): Promise<void> {
+  const uid = await currentUserId();
+  if (!uid) throw new Error('Sign in to rank.');
+  // Replace any previous ranking for this prompt.
+  await client().from('prompt_votes').delete().eq('user_id', uid).eq('prompt_id', promptId);
+  if (scored.length === 0) return;
+  const rows = scored.map((s) => ({ user_id: uid, prompt_id: promptId, item_id: s.itemId, score: s.score }));
+  const { error } = await client().from('prompt_votes').insert(rows);
+  if (error) throw error;
+}
+
+/** The aggregated community ranking for a prompt (public; works signed-out). */
+export async function fetchConsensus(promptId: string): Promise<Consensus> {
+  const { data, error } = await client().rpc('prompt_consensus', { p_prompt_id: promptId });
+  if (error) throw error;
+  return (data as Consensus) ?? { participants: 0, items: [] };
+}
+
+/** The viewer's own scores for a prompt (item_id → score), empty if none/signed out. */
+export async function fetchMyRanking(promptId: string): Promise<Record<string, number>> {
+  const uid = await currentUserId();
+  if (!uid) return {};
+  const { data, error } = await client()
+    .from('prompt_votes')
+    .select('item_id, score')
+    .eq('user_id', uid)
+    .eq('prompt_id', promptId);
+  if (error) return {};
+  const out: Record<string, number> = {};
+  for (const r of data ?? []) out[(r as { item_id: string }).item_id] = (r as { score: number }).score;
+  return out;
+}
+
+/** Prompts with the most participants — for the discovery/trending view. */
+export async function fetchTrendingPrompts(limit = 20): Promise<{ prompt_id: string; participants: number }[]> {
+  const { data, error } = await client().rpc('trending_prompts', { p_limit: limit });
+  if (error) throw error;
+  return (data ?? []) as { prompt_id: string; participants: number }[];
+}

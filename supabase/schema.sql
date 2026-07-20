@@ -155,4 +155,70 @@ grant insert                 on public.reports         to authenticated;
 -- Note: the like-counter and new-user triggers are SECURITY DEFINER, so they
 -- can update published_lists / profiles regardless of the caller's grants.
 
+-- ============================================================================
+--  PROMPTS + CONSENSUS (v1) — everyone ranks the same curated set, we aggregate
+-- ============================================================================
+-- A "prompt" is just a curated list, identified by its string id (e.g.
+-- 'fast-food-chains'). The item sets + artwork live in the app bundle, so there
+-- is NO prompts table — we only store each person's per-item score. Tier→score
+-- is fixed in the app (top tier = 6 … bottom = 1); we store the resulting int.
+
+create table if not exists public.prompt_votes (
+  user_id    uuid not null references public.profiles(id) on delete cascade,
+  prompt_id  text not null,
+  item_id    text not null,
+  score      smallint not null check (score between 1 and 6),
+  created_at timestamptz not null default now(),
+  primary key (user_id, prompt_id, item_id)
+);
+create index if not exists prompt_votes_prompt_idx on public.prompt_votes (prompt_id);
+
+alter table public.prompt_votes enable row level security;
+
+-- Raw votes are private to their owner; everyone else sees only the aggregate
+-- (via the SECURITY DEFINER function below), so no one can peek at how an
+-- individual voted or scrape the raw ballot data.
+drop policy if exists "votes read own"   on public.prompt_votes;
+drop policy if exists "votes insert own" on public.prompt_votes;
+drop policy if exists "votes update own" on public.prompt_votes;
+drop policy if exists "votes delete own" on public.prompt_votes;
+create policy "votes read own"   on public.prompt_votes for select using (auth.uid() = user_id);
+create policy "votes insert own" on public.prompt_votes for insert with check (auth.uid() = user_id);
+create policy "votes update own" on public.prompt_votes for update using (auth.uid() = user_id);
+create policy "votes delete own" on public.prompt_votes for delete using (auth.uid() = user_id);
+
+grant select, insert, update, delete on public.prompt_votes to authenticated;
+grant select                         on public.prompt_votes to anon; -- RLS still limits rows to the owner
+
+-- Consensus for one prompt: participant count + per-item average score & votes.
+-- SECURITY DEFINER so it can read across everyone's votes to aggregate without
+-- exposing individual ballots. Fixed search_path guards against hijacking.
+create or replace function public.prompt_consensus(p_prompt_id text)
+returns json language sql security definer set search_path = public stable as $$
+  select json_build_object(
+    'participants', (select count(distinct user_id) from prompt_votes where prompt_id = p_prompt_id),
+    'items', coalesce((
+      select json_agg(json_build_object('item_id', item_id, 'avg', avg_score, 'votes', votes)
+                      order by avg_score desc)
+      from (
+        select item_id, round(avg(score)::numeric, 2) as avg_score, count(*) as votes
+        from prompt_votes where prompt_id = p_prompt_id group by item_id
+      ) agg
+    ), '[]'::json)
+  );
+$$;
+grant execute on function public.prompt_consensus(text) to anon, authenticated;
+
+-- Trending prompts: the ones with the most participants (for discovery).
+create or replace function public.trending_prompts(p_limit int default 20)
+returns table(prompt_id text, participants bigint)
+language sql security definer set search_path = public stable as $$
+  select prompt_id, count(distinct user_id) as participants
+  from prompt_votes
+  group by prompt_id
+  order by participants desc
+  limit p_limit;
+$$;
+grant execute on function public.trending_prompts(int) to anon, authenticated;
+
 -- Done. Next: enable Google/Apple providers under Authentication → Providers.

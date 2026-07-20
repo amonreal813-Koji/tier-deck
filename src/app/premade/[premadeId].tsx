@@ -16,6 +16,7 @@ import { PressableScale } from '@/components/PressableScale';
 import { useToast } from '@/components/Toast';
 import { resolveArtBatch } from '@/data/premade/art';
 import { getPremadeList } from '@/data/premade';
+import { isCommunityEnabled } from '@/lib/supabase';
 import type { PremadeItem, PremadeTier } from '@/data/premade/types';
 import type { TierItem } from '@/data/types';
 import { useListsStore } from '@/store/useListsStore';
@@ -276,6 +277,14 @@ export default function PremadeScreen() {
       </ScrollView>
 
       <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.md }]}>
+        {isCommunityEnabled ? (
+          <PressableScale
+            onPress={() => router.push(`/community/consensus/${list.id}`)}
+            style={styles.rankBtn}
+          >
+            <Text style={styles.rankBtnText}>🏆 Rank it vs. the crowd</Text>
+          </PressableScale>
+        ) : null}
         <PressableScale onPress={handleMakeItYours} style={{ width: '100%', maxWidth: 520 }}>
           <LinearGradient
             colors={[colors.brandA, colors.brandB]}
@@ -592,6 +601,22 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: 'center',
     paddingHorizontal: spacing.lg,
+    gap: spacing.sm,
+  },
+  rankBtn: {
+    width: '100%',
+    maxWidth: 520,
+    alignItems: 'center',
+    paddingVertical: spacing.sm + 4,
+    borderRadius: radii.pill,
+    backgroundColor: withAlpha('#7C5CFF', 0.16),
+    borderWidth: 1,
+    borderColor: withAlpha('#7C5CFF', 0.45),
+  },
+  rankBtnText: {
+    fontFamily: fonts.bodySemiBold,
+    fontSize: type.caption,
+    color: '#C9BBFF',
   },
   ctaBtn: {
     alignItems: 'center',

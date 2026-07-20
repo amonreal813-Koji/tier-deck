@@ -73,6 +73,8 @@ export default function RootLayout() {
         <Stack.Screen name="community/index" />
         <Stack.Screen name="community/[id]" />
         <Stack.Screen name="community/profile" />
+        <Stack.Screen name="community/rank/[promptId]" />
+        <Stack.Screen name="community/consensus/[promptId]" />
         <Stack.Screen name="import" />
         <Stack.Screen
           name="export/[listId]"

@@ -4,6 +4,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
+
+// On web, KeyboardAvoidingView is pointless and interferes with input focus
+// (clicking the search bar leaves it unusable). Use a plain View there.
+const Fill = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
+const fillProps = Platform.OS === 'ios' ? { behavior: 'padding' as const } : {};
 import Animated, { FadeIn, FadeInDown, ZoomIn, ZoomOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -156,7 +161,7 @@ export default function TopicScreen() {
   return (
     <View style={styles.root}>
       <AnimatedGradientBg />
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <Fill style={{ flex: 1 }} {...fillProps}>
         <View style={[styles.content, { paddingTop: insets.top + spacing.md }]}>
           <View style={styles.topRow}>
             <PressableScale onPress={() => router.back()} style={styles.back} hitSlop={12}>
@@ -371,7 +376,7 @@ export default function TopicScreen() {
             </PressableScale>
           </Animated.View>
         ) : null}
-      </KeyboardAvoidingView>
+      </Fill>
     </View>
   );
 }

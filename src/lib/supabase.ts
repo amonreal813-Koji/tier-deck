@@ -16,6 +16,13 @@ const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
 export const isCommunityEnabled = Boolean(url && anonKey);
 
+/**
+ * The app owner's Supabase user id. Owner-only controls (e.g. editing curated
+ * lists) check the signed-in user against this. Not a secret — it only gates
+ * cosmetic local edits, and RLS is the real security boundary everywhere else.
+ */
+export const OWNER_ID = process.env.EXPO_PUBLIC_OWNER_ID ?? '7b32164f-1891-46d7-b738-970446bda9ef';
+
 export const supabase: SupabaseClient | null = isCommunityEnabled
   ? createClient(url as string, anonKey as string, {
       auth: {

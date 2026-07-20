@@ -12,7 +12,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { OnboardingOverlay } from '@/components/OnboardingOverlay';
@@ -42,6 +42,19 @@ export default function RootLayout() {
     hydrateEdits();
     initAuth();
   }, [hydrate, hydrateEdits, initAuth]);
+
+  // Web: kill the browser's default focus outline on inputs (the "white lines"
+  // around the search bar). Our inputs supply their own focus styling.
+  useEffect(() => {
+    if (Platform.OS !== 'web' || typeof document === 'undefined') return;
+    const style = document.createElement('style');
+    style.textContent =
+      'input,textarea{outline:none!important;-webkit-tap-highlight-color:transparent}';
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
 
   const ready = fontsLoaded && hydrated;
 

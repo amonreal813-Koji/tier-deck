@@ -49,6 +49,18 @@ for (const exp of expansions) {
   }
 }
 
+// Keep tiers in canonical order (S A B C D F, custom labels after). Expansions
+// can append a tier that didn't exist yet (e.g. a 'D' onto an S-A-B-C-F list),
+// which would otherwise render out of order.
+const TIER_ORDER = ['S', 'A', 'B', 'C', 'D', 'F'];
+const tierRank = (label: string) => {
+  const i = TIER_ORDER.indexOf(label);
+  return i === -1 ? TIER_ORDER.length : i;
+};
+for (const list of [...base, ...catalog]) {
+  list.tiers.sort((a, b) => tierRank(a.label) - tierRank(b.label));
+}
+
 const CATEGORY_ORDER: Category[] = ['games', 'movies', 'music', 'food', 'anything', 'books'];
 
 /** Featured order: grouped by category for a browsable "All" view. */

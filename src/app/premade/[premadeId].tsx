@@ -16,7 +16,8 @@ import { PressableScale } from '@/components/PressableScale';
 import { useToast } from '@/components/Toast';
 import { resolveArtBatch } from '@/data/premade/art';
 import { getPremadeList } from '@/data/premade';
-import { isCommunityEnabled } from '@/lib/supabase';
+import { isCommunityEnabled, OWNER_ID } from '@/lib/supabase';
+import { useAuth } from '@/store/useAuth';
 import type { PremadeItem, PremadeTier } from '@/data/premade/types';
 import type { TierItem } from '@/data/types';
 import { useListsStore } from '@/store/useListsStore';
@@ -43,6 +44,8 @@ export default function PremadeScreen() {
   const [selection, setSelection] = useState<Selection | null>(null);
   const [view, setView] = useState<'board' | 'reasons'>('board');
   const [editing, setEditing] = useState(false);
+  // Editing curated lists is owner-only, so visitors can't rearrange them.
+  const isOwner = useAuth((s) => s.user?.id) === OWNER_ID;
   const [movingId, setMovingId] = useState<string | null>(null);
 
   const override = usePremadeEdits((s) => (premadeId ? s.overrides[premadeId] : undefined));
@@ -146,15 +149,17 @@ export default function PremadeScreen() {
             ))}
           </View>
         ) : null}
-        <PressableScale
-          onPress={toggleEditing}
-          scaleTo={0.94}
-          style={[styles.editPill, editing && styles.editPillActive]}
-        >
-          <Text style={[styles.editPillText, editing && styles.editPillTextActive]}>
-            {editing ? 'Done' : 'Edit'}
-          </Text>
-        </PressableScale>
+        {isOwner ? (
+          <PressableScale
+            onPress={toggleEditing}
+            scaleTo={0.94}
+            style={[styles.editPill, editing && styles.editPillActive]}
+          >
+            <Text style={[styles.editPillText, editing && styles.editPillTextActive]}>
+              {editing ? 'Done' : 'Edit'}
+            </Text>
+          </PressableScale>
+        ) : null}
       </View>
 
       {editing ? (

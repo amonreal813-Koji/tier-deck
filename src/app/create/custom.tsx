@@ -18,6 +18,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AnimatedGradientBg } from '@/components/AnimatedGradientBg';
 import { GlassPanel } from '@/components/GlassPanel';
 import { ItemThumb } from '@/components/ItemThumb';
+
+// Web: skip KeyboardAvoidingView (it breaks input focus). Plain View instead.
+const Fill = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
+const fillProps = Platform.OS === 'ios' ? { behavior: 'padding' as const } : {};
 import { PressableScale } from '@/components/PressableScale';
 import { adapters } from '@/data/adapters/registry';
 import type { TierItem } from '@/data/types';
@@ -92,7 +96,7 @@ export default function CustomScreen() {
   return (
     <View style={styles.root}>
       <AnimatedGradientBg />
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <Fill style={{ flex: 1 }} {...fillProps}>
         <View style={[styles.content, { paddingTop: insets.top + spacing.md }]}>
           <View style={styles.topRow}>
             <PressableScale onPress={() => router.back()} style={styles.back} hitSlop={12}>
@@ -198,7 +202,7 @@ export default function CustomScreen() {
             </LinearGradient>
           </PressableScale>
         </View>
-      </KeyboardAvoidingView>
+      </Fill>
     </View>
   );
 }

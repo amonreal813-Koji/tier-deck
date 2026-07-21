@@ -30,6 +30,35 @@ if (fs.existsSync(OG_SRC)) {
   console.warn('! assets/og-cover.png missing — run scripts/build-og.mjs first');
 }
 
+// 1b. PWA: icons + web app manifest, so the app installs to a home screen and
+// launches fullscreen with no browser chrome.
+const PWA_ICONS = ['pwa-192.png', 'pwa-512.png', 'pwa-maskable-512.png', 'apple-touch-icon.png'];
+for (const file of PWA_ICONS) {
+  const src = path.join(ROOT, 'assets', 'images', file);
+  if (fs.existsSync(src)) fs.copyFileSync(src, path.join(OUT, file));
+  else console.warn(`! assets/images/${file} missing — run scripts/build-icons.mjs`);
+}
+
+const manifest = {
+  name: 'Tier Deck',
+  short_name: 'Tier Deck',
+  description: DESC,
+  // Installed app opens straight into the app, not the SEO pages.
+  start_url: '/app',
+  scope: '/app',
+  display: 'standalone',
+  orientation: 'portrait',
+  background_color: '#0A0A0F',
+  theme_color: '#0A0A0F',
+  icons: [
+    { src: '/pwa-192.png', sizes: '192x192', type: 'image/png' },
+    { src: '/pwa-512.png', sizes: '512x512', type: 'image/png' },
+    { src: '/pwa-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+  ],
+};
+fs.writeFileSync(path.join(OUT, 'manifest.webmanifest'), JSON.stringify(manifest, null, 2));
+console.log('✓ wrote manifest.webmanifest + PWA icons');
+
 // 2. Inject meta into the app shell.
 if (!fs.existsSync(APP_HTML)) {
   console.warn('! seo-site/app/index.html not found — did `expo export` run?');
@@ -51,12 +80,22 @@ const meta = `
 <meta name="twitter:title" content="${esc(TITLE)}">
 <meta name="twitter:description" content="${esc(DESC)}">
 <meta name="twitter:image" content="${IMG}">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0A0A0F">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tier Deck">
 `;
 
-if (html.includes('property="og:image"')) {
-  console.log('· app shell already has OG meta, skipping injection');
-} else {
-  html = html.replace('</head>', `${meta}</head>`);
-  fs.writeFileSync(APP_HTML, html);
-  console.log('✓ injected social meta into seo-site/app/index.html');
-}
+// Idempotent: the block is fenced by markers, so re-running always replaces it
+// with the current tag set (a "does it already have og:image?" check would
+// wrongly skip whenever tags are added later).
+const START = '<!-- tierdeck:meta -->';
+const END = '<!-- /tierdeck:meta -->';
+const block = `${START}${meta}${END}`;
+const fenced = new RegExp(`${START}[\\s\\S]*?${END}`);
+
+html = fenced.test(html) ? html.replace(fenced, block) : html.replace('</head>', `${block}</head>`);
+fs.writeFileSync(APP_HTML, html);
+console.log('✓ injected social + PWA meta into seo-site/app/index.html');

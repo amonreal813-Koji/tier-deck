@@ -70,6 +70,13 @@ const jobs = [
     svg: markSvg({ size: 1024, scale: 0.5, colors: ['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'] }),
     w: 1024,
   },
+  // PWA ("Add to Home Screen") icons — full-bleed so the launcher can mask them.
+  { file: 'pwa-192.png', svg: markSvg({ size: 192, scale: 0.56, bg: BG }), w: 192 },
+  { file: 'pwa-512.png', svg: markSvg({ size: 512, scale: 0.56, bg: BG }), w: 512 },
+  // Maskable: extra padding so Android's circle/squircle crop never clips the mark.
+  { file: 'pwa-maskable-512.png', svg: markSvg({ size: 512, scale: 0.42, bg: BG }), w: 512 },
+  // iOS home-screen icon (no transparency, iOS applies its own rounding).
+  { file: 'apple-touch-icon.png', svg: markSvg({ size: 180, scale: 0.56, bg: BG }), w: 180 },
 ];
 
 for (const j of jobs) {

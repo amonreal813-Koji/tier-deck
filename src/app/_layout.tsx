@@ -87,6 +87,7 @@ export default function RootLayout() {
         <Stack.Screen name="community/[id]" />
         <Stack.Screen name="community/profile" />
         <Stack.Screen name="community/prompts" />
+        <Stack.Screen name="community/challenge" />
         <Stack.Screen name="community/rank/[promptId]" />
         <Stack.Screen name="community/consensus/[promptId]" />
         <Stack.Screen name="import" />

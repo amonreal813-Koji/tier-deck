@@ -6,7 +6,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ItemThumb } from '@/components/ItemThumb';
 import { PressableScale } from '@/components/PressableScale';
-import { fetchConsensus, fetchMyRanking, type Consensus } from '@/data/community';
+import { useToast } from '@/components/Toast';
+import { fetchConsensus, fetchMyProfile, fetchMyRanking, type Consensus } from '@/data/community';
+import {
+  agreement,
+  buildChallengeUrl,
+  getPendingChallenge,
+  type Challenge,
+} from '@/utils/challenge';
 import { getPremadeList } from '@/data/premade';
 import { resolveArtBatch } from '@/data/premade/art';
 import type { TierItem } from '@/data/types';
@@ -37,6 +44,9 @@ export default function ConsensusScreen() {
   const [data, setData] = useState<Consensus | null>(null);
   const [mine, setMine] = useState<Record<string, number>>({});
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [challenge, setChallenge] = useState<Challenge | null>(null);
+  const [myName, setMyName] = useState('A friend');
+  const toast = useToast((s) => s.show);
 
   const items = useMemo(() => (list ? list.tiers.flatMap((t) => t.items) : []), [list]);
   const byId = useMemo(() => Object.fromEntries(items.map((i) => [i.id, i])), [items]);
@@ -62,6 +72,10 @@ export default function ConsensusScreen() {
         setStatus('ready');
       })
       .catch(() => setStatus('error'));
+    getPendingChallenge(promptId).then(setChallenge).catch(() => {});
+    fetchMyProfile()
+      .then((p) => p?.display_name && setMyName(p.display_name))
+      .catch(() => {});
   }, [promptId, user]);
 
   if (!list) {
@@ -98,6 +112,29 @@ export default function ConsensusScreen() {
     .slice(0, 3);
 
   const rankHref = `/community/rank/${promptId}` as const;
+  const iRanked = Object.keys(mine).length > 0;
+
+  // Head-to-head against whoever challenged us (only once we've ranked too).
+  const head = challenge && iRanked ? agreement(mine, challenge.scores) : null;
+
+  const challengeFriend = async () => {
+    const url = buildChallengeUrl({ promptId: promptId as string, name: myName, scores: mine });
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(url);
+        toast('Challenge link copied — send it to a friend ⚔️');
+        return;
+      } catch {
+        /* fall through to the share sheet */
+      }
+    }
+    try {
+      const { Share } = require('react-native') as typeof import('react-native');
+      await Share.share({ message: `Think you can match my ranking? ${url}` });
+    } catch {
+      toast('Could not create the link.');
+    }
+  };
 
   return (
     <View style={styles.root}>
@@ -129,6 +166,24 @@ export default function ConsensusScreen() {
             </View>
           ) : status === 'ready' ? (
             <>
+              {/* Head-to-head vs. whoever challenged you */}
+              {head ? (
+                <View style={styles.head2head}>
+                  <Text style={styles.h2hLabel}>YOU VS. {challenge?.name.toUpperCase()}</Text>
+                  <Text style={styles.h2hPct}>{head.pct}%</Text>
+                  <Text style={styles.h2hSub}>
+                    agreement across {head.shared} {head.shared === 1 ? 'pick' : 'picks'}
+                  </Text>
+                  {head.diffs[0] && head.diffs[0].gap > 0 ? (
+                    <Text style={styles.h2hTop} numberOfLines={2}>
+                      Biggest clash: {byId[head.diffs[0].itemId]?.name ?? head.diffs[0].itemId}
+                    </Text>
+                  ) : (
+                    <Text style={styles.h2hTop}>You two agree on everything 🤝</Text>
+                  )}
+                </View>
+              ) : null}
+
               {/* Your hottest takes */}
               {hotTakes.length > 0 ? (
                 <View style={styles.takes}>
@@ -169,9 +224,14 @@ export default function ConsensusScreen() {
       </ScrollView>
 
       <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.md }]}>
-        <PressableScale onPress={() => router.push(rankHref)} style={{ width: '100%', maxWidth: 560 }}>
+        {iRanked ? (
+          <PressableScale onPress={challengeFriend} style={styles.challengeBtn}>
+            <Text style={styles.challengeText}>⚔️ Challenge</Text>
+          </PressableScale>
+        ) : null}
+        <PressableScale onPress={() => router.push(rankHref)} style={{ flex: 1, maxWidth: 560 }}>
           <LinearGradient colors={[colors.brandA, colors.brandB]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cta}>
-            <Text style={styles.ctaText}>{Object.keys(mine).length ? 'Re-rank it →' : 'Rank it yourself →'}</Text>
+            <Text style={styles.ctaText}>{iRanked ? 'Re-rank it →' : 'Rank it yourself →'}</Text>
           </LinearGradient>
         </PressableScale>
       </View>
@@ -202,7 +262,20 @@ const styles = StyleSheet.create({
   big: { fontSize: 42 },
   h2: { fontFamily: fonts.displayMedium, fontSize: type.heading, color: colors.textHi, textAlign: 'center' },
   note: { fontFamily: fonts.body, fontSize: type.caption, color: colors.textMid, textAlign: 'center' },
-  footer: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: spacing.lg, paddingTop: spacing.md, alignItems: 'center', backgroundColor: 'rgba(7,7,11,0.92)', borderTopWidth: 1, borderTopColor: colors.surfaceBorder },
+  head2head: {
+    alignItems: 'center', padding: spacing.lg, borderRadius: radii.panel, marginBottom: spacing.lg,
+    backgroundColor: withAlpha('#FF8A3D', 0.12), borderWidth: 1, borderColor: withAlpha('#FF8A3D', 0.4),
+  },
+  h2hLabel: { fontFamily: fonts.bodySemiBold, fontSize: type.micro, letterSpacing: 1.2, color: '#FFC08A' },
+  h2hPct: { fontFamily: fonts.display, fontSize: 44, color: colors.textHi, marginTop: 2 },
+  h2hSub: { fontFamily: fonts.body, fontSize: type.caption, color: colors.textMid },
+  h2hTop: { fontFamily: fonts.bodySemiBold, fontSize: type.caption, color: colors.textHi, marginTop: spacing.sm, textAlign: 'center' },
+  challengeBtn: {
+    height: 52, paddingHorizontal: spacing.md, borderRadius: radii.pill, alignItems: 'center', justifyContent: 'center',
+    backgroundColor: withAlpha('#FF8A3D', 0.16), borderWidth: 1, borderColor: withAlpha('#FF8A3D', 0.5),
+  },
+  challengeText: { fontFamily: fonts.bodySemiBold, fontSize: type.caption, color: '#FFC08A' },
+  footer: { position: 'absolute', left: 0, right: 0, bottom: 0, flexDirection: 'row', gap: spacing.sm, paddingHorizontal: spacing.lg, paddingTop: spacing.md, alignItems: 'center', backgroundColor: 'rgba(7,7,11,0.92)', borderTopWidth: 1, borderTopColor: colors.surfaceBorder },
   cta: { height: 52, borderRadius: radii.pill, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: 'rgba(255,255,255,0.25)', width: '100%' },
   ctaText: { fontFamily: fonts.bodySemiBold, fontSize: type.body, color: '#FFF' },
   btn: { marginTop: spacing.lg, paddingHorizontal: spacing.xl, paddingVertical: spacing.md, borderRadius: radii.pill, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.surfaceBorder },

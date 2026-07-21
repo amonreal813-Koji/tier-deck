@@ -45,3 +45,6 @@ example
 
 # Generated SEO site (rebuild with: npm run build:seo)
 seo-site/
+
+# Local build cache for scripts/build-site.mjs
+.build-cache/

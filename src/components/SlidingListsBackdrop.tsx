@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { heroArtFor, premadeLists } from '@/data/premade';
 import { resolveArtBatch } from '@/data/premade/art';
@@ -22,9 +22,10 @@ const CARD_H = 94;
 const GAP = 14;
 const ROW_GAP = 20;
 const CARDS_PER_ROW = 6;
-const ROWS = 3;
+const MAX_ROWS = 12; // rows are generated to fill the viewport, capped here
 
-const PICKS = premadeLists.filter((_, i) => i % 13 === 0).slice(0, ROWS * CARDS_PER_ROW);
+// A spread across the catalog for variety; rows slice into this and wrap around.
+const PICKS = premadeLists.filter((_, i) => i % 4 === 0).slice(0, MAX_ROWS * CARDS_PER_ROW);
 
 interface Mini {
   id: string;
@@ -36,13 +37,19 @@ let injected = false;
 function ensureCss() {
   if (Platform.OS !== 'web' || injected || typeof document === 'undefined') return;
   injected = true;
+  // One rule per row: alternating direction, staggered speeds so rows never
+  // march in lockstep.
+  const rules = Array.from({ length: MAX_ROWS }, (_, r) => {
+    const duration = 52 + r * 9;
+    const dir = r % 2 === 1 ? ' reverse' : '';
+    return `[data-tdmq="${r}"] { animation: td-marquee ${duration}s linear infinite${dir}; }`;
+  }).join('\n    ');
+
   const style = document.createElement('style');
   style.textContent = `
     @keyframes td-marquee { to { transform: translate3d(-50%, 0, 0); } }
     [data-tdmq] { will-change: transform; }
-    [data-tdmq="0"] { animation: td-marquee 52s linear infinite; }
-    [data-tdmq="1"] { animation: td-marquee 68s linear infinite reverse; }
-    [data-tdmq="2"] { animation: td-marquee 84s linear infinite; }
+    ${rules}
     @media (prefers-reduced-motion: reduce) { [data-tdmq] { animation: none; } }
   `;
   document.head.appendChild(style);
@@ -85,6 +92,9 @@ function Row({ cards, art, top, index }: {
 
 export function SlidingListsBackdrop() {
   const [art, setArt] = useState<Record<string, string | null>>({});
+  const { height } = useWindowDimensions();
+  // Enough rows to fill the viewport (plus one, so scrolling never reveals a gap).
+  const rowCount = Math.min(MAX_ROWS, Math.max(3, Math.ceil(height / (CARD_H + ROW_GAP)) + 1));
 
   useEffect(() => {
     ensureCss();
@@ -100,11 +110,11 @@ export function SlidingListsBackdrop() {
 
   const rows: Mini[][] = useMemo(() => {
     const minis: Mini[] = PICKS.map((l) => ({ id: l.id, colors: l.tiers.map((t) => t.color) }));
-    return Array.from({ length: ROWS }, (_, r) => {
-      const slice = minis.slice(r * CARDS_PER_ROW, (r + 1) * CARDS_PER_ROW);
-      return slice.length ? slice : minis.slice(0, CARDS_PER_ROW);
-    });
-  }, []);
+    // Wrap around the pool so every row is filled even on very tall screens.
+    return Array.from({ length: rowCount }, (_, r) =>
+      Array.from({ length: CARDS_PER_ROW }, (_, c) => minis[(r * CARDS_PER_ROW + c) % minis.length])
+    );
+  }, [rowCount]);
 
   return (
     <View style={styles.wrap} pointerEvents="none">

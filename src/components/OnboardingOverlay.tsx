@@ -1,5 +1,6 @@
+import { usePathname } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
 import { storage } from '@/store/storage';
@@ -20,9 +21,15 @@ const TIPS: { glyph: string; title: string; body: string }[] = [
 /**
  * One-time welcome shown on first launch, gated by a persisted flag. Renders
  * nothing after it's been dismissed once (or while the flag is loading).
+ *
+ * Home-screen only, and tap-anywhere to dismiss. Both matter: this is a
+ * full-screen scrim, so if it ever rode along onto another route it would
+ * silently swallow every click there (autoFocus still lands, so an input would
+ * accept typing but refuse to focus on click — a genuinely baffling bug).
  */
 export function OnboardingOverlay() {
   const [visible, setVisible] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     let alive = true;
@@ -39,10 +46,18 @@ export function OnboardingOverlay() {
     storage.set(SEEN_KEY, true);
   };
 
-  if (!visible) return null;
+  // Never cover a screen the user deliberately navigated to.
+  if (!visible || pathname !== '/') return null;
 
   return (
     <Animated.View entering={FadeIn.duration(220)} style={styles.scrim} pointerEvents="auto">
+      {/* Tapping the scrim dismisses, so it can never trap the user. */}
+      <Pressable
+        style={StyleSheet.absoluteFill}
+        onPress={dismiss}
+        accessibilityRole="button"
+        accessibilityLabel="Dismiss welcome"
+      />
       <Animated.View entering={FadeInDown.springify().damping(18)} style={styles.card}>
         <GlassPanel radius={radii.panel} style={StyleSheet.absoluteFill} />
         <View style={styles.inner}>

@@ -139,6 +139,16 @@ export default function CommunityScreen() {
 
         <Text style={styles.title}>What the internet ranked</Text>
 
+        {/* Rank & Compare — the daily prompt + trending prompts live here. */}
+        <PressableScale onPress={() => router.push('/community/prompts')} style={styles.rankBanner}>
+          <Text style={styles.rankGlyph}>🏆</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.rankTitle}>Rank &amp; Compare</Text>
+            <Text style={styles.rankSub}>Today's prompt · see how you match the crowd</Text>
+          </View>
+          <Text style={styles.rankArrow}>→</Text>
+        </PressableScale>
+
         {/* Hot / New */}
         <View style={styles.toggle}>
           {(['hot', 'new'] as const).map((s) => {
@@ -216,6 +226,15 @@ const styles = StyleSheet.create({
   signOut: { paddingHorizontal: spacing.sm, paddingVertical: 6 },
   signOutText: { fontFamily: fonts.bodyMedium, fontSize: type.micro + 1, color: colors.textLow },
   title: { fontFamily: fonts.display, fontSize: type.title, color: colors.textHi, marginBottom: spacing.md },
+  rankBanner: {
+    flexDirection: 'row', alignItems: 'center', gap: spacing.md, padding: spacing.md,
+    borderRadius: radii.card, marginBottom: spacing.md,
+    backgroundColor: withAlpha('#FF8A3D', 0.12), borderWidth: 1, borderColor: withAlpha('#FF8A3D', 0.4),
+  },
+  rankGlyph: { fontSize: 22 },
+  rankTitle: { fontFamily: fonts.displayMedium, fontSize: type.heading, color: colors.textHi },
+  rankSub: { fontFamily: fonts.body, fontSize: type.caption, color: colors.textMid, marginTop: 1 },
+  rankArrow: { fontSize: 18, color: '#FFC08A' },
   toggle: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.md },
   tab: {
     paddingHorizontal: spacing.md, paddingVertical: spacing.xs + 3, borderRadius: radii.pill,

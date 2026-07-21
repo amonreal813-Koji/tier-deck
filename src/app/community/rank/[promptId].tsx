@@ -11,6 +11,7 @@ import { useToast } from '@/components/Toast';
 import { getPremadeList } from '@/data/premade';
 import { resolveArtBatch } from '@/data/premade/art';
 import { fetchMyRanking, submitRanking, tierScore } from '@/data/community';
+import { dailyPromptId, markDailyRanked } from '@/data/dailyPrompt';
 import type { TierItem } from '@/data/types';
 import { useAuth } from '@/store/useAuth';
 import { DEFAULT_TIERS } from '@/theme/tierColors';
@@ -110,6 +111,8 @@ export default function RankScreen() {
     try {
       const scored = Object.entries(placed).map(([itemId, ti]) => ({ itemId, score: tierScore(ti) }));
       await submitRanking(promptId, scored);
+      // Ranking today's prompt keeps the streak alive.
+      if (promptId === dailyPromptId()) await markDailyRanked().catch(() => 0);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       router.replace(`/community/consensus/${promptId}`);
     } catch (e) {

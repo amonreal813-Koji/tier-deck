@@ -21,11 +21,12 @@ const CARD_W = 132;
 const CARD_H = 94;
 const GAP = 14;
 const ROW_GAP = 20;
-const CARDS_PER_ROW = 6;
 const MAX_ROWS = 12; // rows are generated to fill the viewport, capped here
+const MAX_CARDS_PER_ROW = 18;
 
-// A spread across the catalog for variety; rows slice into this and wrap around.
-const PICKS = premadeLists.filter((_, i) => i % 4 === 0).slice(0, MAX_ROWS * CARDS_PER_ROW);
+// A wide spread across the catalog so a single row never repeats an image.
+// Capped so home resolves a bounded number of hero images; rows reuse the pool.
+const PICKS = premadeLists.filter((_, i) => i % 3 === 0).slice(0, 60);
 
 interface Mini {
   id: string;
@@ -79,7 +80,8 @@ function Row({ cards, art, top, index }: {
   top: number;
   index: number;
 }) {
-  const set = (prefix: string) => cards.map((c) => <MiniCard key={prefix + c.id} card={c} url={art[c.id]} />);
+  const set = (prefix: string) =>
+    cards.map((c, i) => <MiniCard key={`${prefix}${i}-${c.id}`} card={c} url={art[c.id]} />);
   return (
     <View style={[styles.row, { top }]} pointerEvents="none">
       <View style={styles.track} {...marqueeAttr(index)}>
@@ -92,9 +94,16 @@ function Row({ cards, art, top, index }: {
 
 export function SlidingListsBackdrop() {
   const [art, setArt] = useState<Record<string, string | null>>({});
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   // Enough rows to fill the viewport (plus one, so scrolling never reveals a gap).
   const rowCount = Math.min(MAX_ROWS, Math.max(3, Math.ceil(height / (CARD_H + ROW_GAP)) + 1));
+  // The marquee slides by exactly one card set, so a set must be at least as
+  // wide as the viewport — otherwise the far side runs out of cards and the
+  // loop visibly jumps. +1 card of headroom.
+  const cardsPerRow = Math.min(
+    MAX_CARDS_PER_ROW,
+    Math.max(4, Math.ceil((width || 1280) / (CARD_W + GAP)) + 1)
+  );
 
   useEffect(() => {
     ensureCss();
@@ -110,11 +119,11 @@ export function SlidingListsBackdrop() {
 
   const rows: Mini[][] = useMemo(() => {
     const minis: Mini[] = PICKS.map((l) => ({ id: l.id, colors: l.tiers.map((t) => t.color) }));
-    // Wrap around the pool so every row is filled even on very tall screens.
+    // Wrap around the pool so every row is filled on any screen size.
     return Array.from({ length: rowCount }, (_, r) =>
-      Array.from({ length: CARDS_PER_ROW }, (_, c) => minis[(r * CARDS_PER_ROW + c) % minis.length])
+      Array.from({ length: cardsPerRow }, (_, c) => minis[(r * cardsPerRow + c) % minis.length])
     );
-  }, [rowCount]);
+  }, [rowCount, cardsPerRow]);
 
   return (
     <View style={styles.wrap} pointerEvents="none">
@@ -134,10 +143,14 @@ export function SlidingListsBackdrop() {
 const styles = StyleSheet.create({
   wrap: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.22, overflow: 'hidden' },
   row: { position: 'absolute', left: 0, right: 0, height: CARD_H, overflow: 'hidden' },
-  track: { flexDirection: 'row' },
+  // alignSelf keeps the track from stretching to the row's width: it must size
+  // to its content (two card sets) so translateX(-50%) slides by exactly one
+  // set. Stretched, the loop jumps and the far side runs out of cards.
+  track: { flexDirection: 'row', alignSelf: 'flex-start' },
   card: {
     width: CARD_W,
     height: CARD_H,
+    flexShrink: 0, // never compress; the loop math depends on exact card widths
     marginRight: GAP,
     borderRadius: 12,
     overflow: 'hidden',

@@ -29,22 +29,35 @@ export function GlassPanel({ children, style, radius = radii.panel, tint, intens
     borderColor: colors.surfaceBorder,
   };
 
+  // Every layer below is decoration and must never intercept input. On web these
+  // are absolutely positioned, and CSS paints positioned elements above static
+  // ones — so a bare child (e.g. a TextInput rendered straight into a
+  // GlassPanel) would sit *under* them and become unclickable.
   return (
     <View style={[shell, style]}>
       {Platform.OS === 'ios' ? (
-        <BlurView intensity={intensity} tint="dark" style={StyleSheet.absoluteFill} />
+        <BlurView intensity={intensity} tint="dark" style={StyleSheet.absoluteFill} pointerEvents="none" />
       ) : (
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.bgRaised, opacity: 0.88 }]} />
+        <View
+          style={[StyleSheet.absoluteFill, { backgroundColor: colors.bgRaised, opacity: 0.88 }]}
+          pointerEvents="none"
+        />
       )}
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.surface }]} />
-      {tint ? <View style={[StyleSheet.absoluteFill, { backgroundColor: tint }]} /> : null}
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.surface }]} pointerEvents="none" />
+      {tint ? (
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: tint }]} pointerEvents="none" />
+      ) : null}
       {Platform.OS === 'android' ? (
         <LinearGradient
           colors={['rgba(255,255,255,0.05)', 'rgba(255,255,255,0)']}
           style={StyleSheet.absoluteFill}
+          pointerEvents="none"
         />
       ) : null}
-      <View style={[styles.topHighlight, { borderTopLeftRadius: radius, borderTopRightRadius: radius }]} />
+      <View
+        style={[styles.topHighlight, { borderTopLeftRadius: radius, borderTopRightRadius: radius }]}
+        pointerEvents="none"
+      />
       {children}
     </View>
   );

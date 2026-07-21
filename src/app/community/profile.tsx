@@ -18,6 +18,8 @@ import {
   type PublishedList,
 } from '@/data/community';
 import { useAuth } from '@/store/useAuth';
+import { OWNER_ID } from '@/lib/supabase';
+import { usePro } from '@/store/usePro';
 import { withAlpha } from '@/theme/tierColors';
 import { colors, fonts, radii, spacing, type } from '@/theme/tokens';
 import { NAME_MAX, validateDisplayName } from '@/utils/displayName';
@@ -45,6 +47,9 @@ export default function ProfileScreen() {
   const [saving, setSaving] = useState(false);
   const [mine, setMine] = useState<PublishedList[]>([]);
   const checkRef = useRef(0);
+  const isPro = usePro((s) => s.isPro);
+  const setPro = usePro((s) => s.setPro);
+  const isOwner = user?.id === OWNER_ID;
 
   const imageOptions = useMemo(
     () => (googlePhoto ? [googlePhoto, ...AVATAR_IMAGES] : AVATAR_IMAGES),
@@ -229,6 +234,27 @@ export default function ProfileScreen() {
             </>
           ) : null}
 
+          {/* Pro — owner-only switch until billing is wired up. */}
+          {isOwner ? (
+            <>
+              <Text style={[styles.label, { marginTop: spacing.xl }]}>Tier Deck Pro</Text>
+              <PressableScale
+                onPress={() => {
+                  Haptics.selectionAsync();
+                  setPro(!isPro);
+                  toast(isPro ? 'Pro off' : 'Pro on — exports lose the watermark ✨');
+                }}
+                style={[styles.proRow, isPro && styles.proRowOn]}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.proTitle}>{isPro ? '✨ Pro is on' : 'Pro is off'}</Text>
+                  <Text style={styles.proSub}>Watermark-free exports</Text>
+                </View>
+                <Text style={[styles.proToggle, isPro && { color: '#4ADE80' }]}>{isPro ? 'ON' : 'OFF'}</Text>
+              </PressableScale>
+            </>
+          ) : null}
+
           <PressableScale onPress={doSignOut} style={styles.signOut}>
             <Text style={styles.signOutText}>Sign out</Text>
           </PressableScale>
@@ -299,6 +325,15 @@ const styles = StyleSheet.create({
     backgroundColor: withAlpha('#FF3B6B', 0.12), borderWidth: 1, borderColor: withAlpha('#FF3B6B', 0.4),
   },
   unpubText: { fontFamily: fonts.bodySemiBold, fontSize: type.micro + 1, color: '#FF8FA8' },
+  proRow: {
+    flexDirection: 'row', alignItems: 'center', gap: spacing.md, padding: spacing.md,
+    borderRadius: radii.card, backgroundColor: colors.surface,
+    borderWidth: 1, borderColor: colors.surfaceBorder,
+  },
+  proRowOn: { backgroundColor: withAlpha('#4ADE80', 0.1), borderColor: withAlpha('#4ADE80', 0.4) },
+  proTitle: { fontFamily: fonts.bodySemiBold, fontSize: type.body, color: colors.textHi },
+  proSub: { fontFamily: fonts.body, fontSize: type.micro + 1, color: colors.textMid, marginTop: 1 },
+  proToggle: { fontFamily: fonts.bodySemiBold, fontSize: type.caption, color: colors.textLow },
   signOut: {
     marginTop: spacing.xl, alignSelf: 'center', paddingHorizontal: spacing.lg, paddingVertical: spacing.sm + 2,
     borderRadius: radii.pill, borderWidth: 1, borderColor: colors.surfaceBorder, backgroundColor: colors.surface,

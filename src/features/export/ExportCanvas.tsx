@@ -4,6 +4,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import type { TierList } from '@/data/types';
+import { usePro } from '@/store/usePro';
 import { withAlpha } from '@/theme/tierColors';
 import { colors, fonts } from '@/theme/tokens';
 
@@ -31,6 +32,7 @@ function initials(name: string): string {
  * ratio, so a ~360dp canvas lands at ~1080px.
  */
 export function ExportCanvas({ list, width, onImageSettled }: ExportCanvasProps) {
+  const isPro = usePro((s) => s.isPro); // Pro exports skip the watermark
   return (
     <View style={[styles.canvas, { width }]}>
       <View style={styles.header}>
@@ -81,7 +83,7 @@ export function ExportCanvas({ list, width, onImageSettled }: ExportCanvasProps)
             <View key={t.id} style={[styles.footerBar, { backgroundColor: t.color }]} />
           ))}
         </View>
-        <Text style={styles.watermark}>◆ made with Tier Deck</Text>
+        {isPro ? null : <Text style={styles.watermark}>◆ made with Tier Deck</Text>}
       </View>
     </View>
   );

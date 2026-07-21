@@ -20,6 +20,7 @@ import { ToastHost } from '@/components/Toast';
 import { useAuth } from '@/store/useAuth';
 import { useListsStore } from '@/store/useListsStore';
 import { usePremadeEdits } from '@/store/usePremadeEdits';
+import { usePro } from '@/store/usePro';
 import { colors } from '@/theme/tokens';
 
 SplashScreen.preventAutoHideAsync();
@@ -36,12 +37,14 @@ export default function RootLayout() {
   const hydrate = useListsStore((s) => s.hydrate);
   const hydrateEdits = usePremadeEdits((s) => s.hydrate);
   const initAuth = useAuth((s) => s.init);
+  const hydratePro = usePro((s) => s.hydrate);
 
   useEffect(() => {
     hydrate();
     hydrateEdits();
     initAuth();
-  }, [hydrate, hydrateEdits, initAuth]);
+    hydratePro();
+  }, [hydrate, hydrateEdits, initAuth, hydratePro]);
 
   // Web: kill the browser's default focus outline on inputs (the "white lines"
   // around the search bar). Our inputs supply their own focus styling.

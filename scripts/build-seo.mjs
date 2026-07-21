@@ -20,6 +20,29 @@ const CACHE_FILE = path.join(__dirname, 'seo-art-cache.json');
 const BASE_URL = (process.env.BASE_URL || 'https://example.com').replace(/\/$/, '');
 const AMAZON_TAG = process.env.AMAZON_TAG || '';
 
+/**
+ * Google AdSense — SEO pages only, never inside the app.
+ * Set ADSENSE_CLIENT (e.g. "ca-pub-1234567890123456") in the Netlify env once
+ * your account is approved; leave it blank and no ad markup is emitted at all,
+ * so the pages stay clean until you're actually earning.
+ */
+const ADSENSE_CLIENT = process.env.ADSENSE_CLIENT || '';
+const ADSENSE_SLOT = process.env.ADSENSE_SLOT || '';
+
+const adsenseHead = () =>
+  ADSENSE_CLIENT
+    ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${esc(ADSENSE_CLIENT)}" crossorigin="anonymous"></script>`
+    : '';
+
+/** One responsive in-article unit. Renders nothing until AdSense is configured. */
+const adUnit = () =>
+  ADSENSE_CLIENT
+    ? `<div class="ad"><ins class="adsbygoogle" style="display:block" data-ad-client="${esc(ADSENSE_CLIENT)}"${
+        ADSENSE_SLOT ? ` data-ad-slot="${esc(ADSENSE_SLOT)}"` : ''
+      } data-ad-format="auto" data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>`
+    : '';
+
 const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/premade/catalog.json'), 'utf8'));
 
 const SHOP = {
@@ -126,6 +149,7 @@ h1{font-size:clamp(28px,5vw,40px);line-height:1.12;margin:0 0 6px;background:lin
 .cell .sub{color:#8A8A9A;font-size:11.5px;margin-top:1px}
 .cell p{margin:6px 0 0;color:#AeAeBe;color:#ADADBD;font-size:12px;line-height:1.45}
 .buy{display:inline-block;margin-top:8px;font-size:12px;font-weight:700;color:#8BF0B0}
+.ad{margin:30px 0;min-height:90px}
 .disc{color:#6E6E80;font-size:12px;margin-top:26px}
 .foot{margin-top:34px;color:#6E6E80;font-size:13px}
 .cta{display:inline-block;padding:13px 22px;border-radius:999px;font-weight:800;font-size:15px;color:#0A0A0F;background:linear-gradient(90deg,#7C5CFF,#4CC9F0);box-shadow:0 8px 24px rgba(124,92,255,.35);transition:filter .15s}
@@ -184,6 +208,7 @@ function pageHtml(list) {
 <meta name="twitter:card" content="summary_large_image">
 <style>${CSS}</style>
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
+${adsenseHead()}
 </head><body><div class="wrap">
 <p class="top"><a href="/lists">← All tier lists</a></p>
 <h1>${esc(list.title)}</h1>
@@ -191,6 +216,7 @@ function pageHtml(list) {
 ${list.basis ? `<div class="basis">${esc(list.basis)}</div>` : ''}
 <div class="ctawrap"><a class="cta" href="/app">✦ Disagree? Make your own →</a></div>
 ${tiers}
+${adUnit()}
 ${hint ? `<p class="disc">As an Amazon Associate we may earn from qualifying purchases.</p>` : ''}
 <p class="foot">◆ Ranked on Tier Deck · <a href="/lists">browse all ${catalog.length} lists</a> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></p>
 </div></body></html>`;
@@ -220,11 +246,14 @@ function indexHtml() {
 <meta name="description" content="${catalog.length} fact-checked tier lists ranking movies, TV, games, food, music, sports and more — with the reasoning behind every placement.">
 <meta property="og:title" content="Tier Deck — ${catalog.length} fact-checked tier lists">
 <meta property="og:description" content="Rank everything. ${catalog.length} curated tier lists with real reasoning.">
-<style>${CSS}</style></head><body><div class="wrap">
+<style>${CSS}</style>
+${adsenseHead()}
+</head><body><div class="wrap">
 <h1>Every Tier List</h1>
 <p class="lede">${catalog.length} fact-checked rankings — tap in for the reasons behind every placement.</p>
 <div class="ctawrap"><a class="cta" href="/app">✦ Make your own tier list →</a></div>
 <div class="grid">${cards}</div>
+${adUnit()}
 <p class="foot">◆ Tier Deck · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></p>
 </div></body></html>`;
 }

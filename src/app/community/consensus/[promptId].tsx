@@ -108,6 +108,9 @@ export default function ConsensusScreen() {
   const hotTakes = Object.entries(mine)
     .filter(([id]) => avgById[id] !== undefined)
     .map(([id, myScore]) => ({ id, myScore, avg: avgById[id], diff: myScore - avgById[id] }))
+    // Only genuine disagreements — no "hot take" when you match the crowd (or
+    // are the only voter, where your rating *is* the consensus).
+    .filter((t) => Math.abs(t.diff) >= 0.5)
     .sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff))
     .slice(0, 3);
 

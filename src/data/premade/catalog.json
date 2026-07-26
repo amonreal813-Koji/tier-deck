@@ -2348,6 +2348,16 @@
               "domain": "cafecoffeeday.com"
             },
             "subtitle": "India's cafe pioneer"
+          },
+          {
+            "id": "7-brew",
+            "name": "7 Brew",
+            "reasoning": "Founded in 2017 in Rogers, Arkansas, this drive-thru-only chain built a cult following on fast, upbeat service and a huge menu of customizable coffees and energy drinks — now one of the fastest-growing coffee franchises in the US with hundreds of stands.",
+            "subtitle": "Drive-thru cult upstart",
+            "art": {
+              "type": "logo",
+              "domain": "7brew.com"
+            }
           }
         ]
       },

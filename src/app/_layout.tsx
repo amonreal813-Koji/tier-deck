@@ -12,9 +12,11 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
-import { Platform, View } from 'react-native';
+import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import { AppSplash } from '@/components/AppSplash';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { OnboardingOverlay } from '@/components/OnboardingOverlay';
 import { ToastHost } from '@/components/Toast';
 import { useAuth } from '@/store/useAuth';
@@ -68,12 +70,18 @@ export default function RootLayout() {
   }, [ready]);
 
   if (!ready) {
-    return <View style={{ flex: 1, backgroundColor: colors.bg }} />;
+    return (
+      <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.bg }}>
+        <StatusBar style="light" />
+        <AppSplash />
+      </GestureHandlerRootView>
+    );
   }
 
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.bg }}>
       <StatusBar style="light" />
+      <ErrorBoundary>
       <Stack
         screenOptions={{
           headerShown: false,
@@ -99,6 +107,7 @@ export default function RootLayout() {
           options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
         />
       </Stack>
+      </ErrorBoundary>
       <ToastHost />
       <OnboardingOverlay />
     </GestureHandlerRootView>

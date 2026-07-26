@@ -9,6 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { backdropEntering, backdropExiting, backdropFixed, sheetEntering, sheetExiting } from '@/theme/motion';
 
 import { AnimatedGradientBg } from '@/components/AnimatedGradientBg';
+import { NotFound } from '@/components/NotFound';
 import { GlassPanel } from '@/components/GlassPanel';
 import { GlowBadge } from '@/components/GlowBadge';
 import { ItemThumb } from '@/components/ItemThumb';
@@ -75,9 +76,10 @@ export default function PremadeScreen() {
 
   if (!list) {
     return (
-      <View style={styles.root}>
-        <AnimatedGradientBg />
-      </View>
+      <NotFound
+        title="List not found"
+        message="This tier list may have moved or never existed. Browse the rest from home."
+      />
     );
   }
 

@@ -47,3 +47,22 @@
   to = "/:slug"
   status = 301
   force = false
+
+# Baseline security headers on every response. Deliberately no Content-Security-
+# Policy: the app pulls images/data from several hosts (Wikipedia, iTunes,
+# Brandfetch, Supabase) and would-be AdSense, so a hand-rolled CSP risks silent
+# breakage — the headers below are the safe, high-value subset.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# The Expo bundle ships content-hashed filenames, so its assets can be cached
+# forever — a new deploy changes the hash and busts the cache automatically.
+[[headers]]
+  for = "/app/_expo/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

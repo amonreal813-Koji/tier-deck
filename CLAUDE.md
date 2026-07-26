@@ -9,7 +9,7 @@ works with no account and no network beyond public art/search APIs.
   `tier-deck-web` — **never** start a dev server with raw Bash.
 - Routes live at the **root** in dev (`/community`) but under **`/app`** in the
   production export (baseUrl). So dev = `localhost:8081/community`, prod =
-  `tier-deck.netlify.app/app/community`. Don't use `/app/...` paths locally.
+  `tierdeck.net/app/community`. Don't use `/app/...` paths locally.
 - First dev load after a code change is slow (Metro rebuilds ~1500 unminified
   modules) — that's normal, not a hang.
 - Type-check with `npx tsc --noEmit` before committing. Keep it at zero errors.
@@ -22,6 +22,9 @@ works with no account and no network beyond public art/search APIs.
   - bare `/` → **301 redirects to `/app`** (the interactive app is the front door)
   - `/app` → the Expo app · `/lists` → SEO hub · `/sneaker-brands` etc. → SEO pages
   - `/privacy`, `/terms` → legal pages
+- Live at **tierdeck.net** (custom domain on the Netlify site; the old
+  `tier-deck.netlify.app` still resolves and redirects). `BASE_URL` is pinned in
+  `netlify.toml` — the SEO build uses it for sitemap/canonical/OG links.
 - Site owned by the **Dreamthorn** Netlify team (NOT amonreal813's team). Its
   GitHub is `amonreal813-Koji/tier-deck` (public — no secrets committed).
 - `seo-site/` and `dist/` are gitignored build outputs — never commit them.

@@ -17,7 +17,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, 'seo-site');
 const CACHE_FILE = path.join(__dirname, 'seo-art-cache.json');
-const BASE_URL = (process.env.BASE_URL || 'https://example.com').replace(/\/$/, '');
+const BASE_URL = (process.env.BASE_URL || 'https://tierdeck.net').replace(/\/$/, '');
 const AMAZON_TAG = process.env.AMAZON_TAG || '';
 
 /**

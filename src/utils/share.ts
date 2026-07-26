@@ -109,6 +109,6 @@ export function decodeParamToDraft(param: string): ImportDraft | null {
 export function buildShareUrl(list: TierList): string {
   const param = encodeListToParam(list);
   const origin =
-    typeof window !== 'undefined' && window.location ? window.location.origin : 'https://tierdeck.app';
+    typeof window !== 'undefined' && window.location ? window.location.origin : 'https://tierdeck.net';
   return `${origin}/import?d=${param}`;
 }

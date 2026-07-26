@@ -31,8 +31,9 @@ Auto-deploys on push. Two ways to confirm it went green:
   before/after, so you can't diff content. Fall back to the bundle check below.
 
 ## 4. Verify the live change
-- Load the live URL in the browser (bare `tier-deck.netlify.app` → app;
-  `/lists`, `/sneaker-brands` → SEO; `/privacy` `/terms` → legal).
+- Load the live URL in the browser (bare `tierdeck.net` → app; `/lists`,
+  `/sneaker-brands` → SEO; `/privacy` `/terms` → legal). The old
+  `tier-deck.netlify.app` still resolves and redirects to the custom domain.
 - **Env-var / gating changes** are baked into the JS bundle at build time. To
   confirm a var landed, fetch the app shell and grep the entry bundle:
   ```js

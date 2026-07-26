@@ -43,7 +43,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" v
   <text x="600" y="215" text-anchor="middle" font-family="Arial, sans-serif" font-size="130" font-weight="800" fill="url(#wm)">Tier Deck</text>
   <text x="600" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="46" fill="#C2C2D0">Rank absolutely everything.</text>
   ${chips}
-  <text x="600" y="560" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#7C5CFF">tier-deck.netlify.app</text>
+  <text x="600" y="560" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#7C5CFF">tierdeck.net</text>
 </svg>`;
 
 await sharp(Buffer.from(svg)).png().toFile(OUT);

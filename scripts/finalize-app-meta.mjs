@@ -12,7 +12,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
-const BASE_URL = (process.env.BASE_URL || 'https://tier-deck.netlify.app').replace(/\/$/, '');
+const BASE_URL = (process.env.BASE_URL || 'https://tierdeck.net').replace(/\/$/, '');
 const OG_SRC = path.join(ROOT, 'assets', 'og-cover.png');
 const OUT = path.join(ROOT, 'seo-site');
 const APP_HTML = path.join(OUT, 'app', 'index.html');

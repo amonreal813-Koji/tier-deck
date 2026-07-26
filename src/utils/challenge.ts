@@ -55,7 +55,7 @@ export function decodeChallenge(param: string): Challenge | null {
  * from the current path instead of hardcoding either.
  */
 export function buildChallengeUrl(c: Challenge): string {
-  const origin = typeof window !== 'undefined' && window.location ? window.location.origin : 'https://tier-deck.netlify.app';
+  const origin = typeof window !== 'undefined' && window.location ? window.location.origin : 'https://tierdeck.net';
   const underApp =
     typeof window !== 'undefined' && window.location ? window.location.pathname.startsWith('/app') : true;
   return `${origin}${underApp ? '/app' : ''}/community/challenge?d=${encodeChallenge(c)}`;

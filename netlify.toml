@@ -21,6 +21,10 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  # Production URL — stamped into the sitemap, canonical tags, and social-share
+  # (OG) links by the SEO build. If a BASE_URL is also set in the Netlify UI, the
+  # UI value wins, so keep them in sync (or remove the UI one to defer here).
+  BASE_URL = "https://tierdeck.net"
 
 # Bare domain opens the interactive app (the front door). force = true so the
 # redirect beats the static index.html that also sits at the root. Individual

@@ -29,6 +29,23 @@ const AMAZON_TAG = process.env.AMAZON_TAG || '';
 const ADSENSE_CLIENT = process.env.ADSENSE_CLIENT || '';
 const ADSENSE_SLOT = process.env.ADSENSE_SLOT || '';
 
+/**
+ * Cloudflare Web Analytics — cookieless page-view counts, no fingerprinting and
+ * no cross-site tracking, so it needs no consent banner. Same opt-in shape as
+ * AdSense: set CF_ANALYTICS_TOKEN in the Netlify env to switch it on; leave it
+ * blank and not a single byte of tracking script is emitted. The privacy page
+ * text below keys off the same flag, so the policy can never claim we don't
+ * track while we do.
+ */
+const CF_ANALYTICS_TOKEN = process.env.CF_ANALYTICS_TOKEN || '';
+
+const analyticsHead = () =>
+  CF_ANALYTICS_TOKEN
+    ? `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${esc(
+        CF_ANALYTICS_TOKEN
+      )}"}'></script>`
+    : '';
+
 const adsenseHead = () =>
   ADSENSE_CLIENT
     ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${esc(ADSENSE_CLIENT)}" crossorigin="anonymous"></script>`
@@ -208,7 +225,7 @@ function pageHtml(list) {
 <meta name="twitter:card" content="summary_large_image">
 <style>${CSS}</style>
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
-${adsenseHead()}
+${adsenseHead()}${analyticsHead()}
 </head><body><div class="wrap">
 <p class="top"><a href="/lists">← All tier lists</a></p>
 <h1>${esc(list.title)}</h1>
@@ -247,7 +264,7 @@ function indexHtml() {
 <meta property="og:title" content="Tier Deck — ${catalog.length} fact-checked tier lists">
 <meta property="og:description" content="Rank everything. ${catalog.length} curated tier lists with real reasoning.">
 <style>${CSS}</style>
-${adsenseHead()}
+${adsenseHead()}${analyticsHead()}
 </head><body><div class="wrap">
 <h1>Every Tier List</h1>
 <p class="lede">${catalog.length} fact-checked rankings — tap in for the reasons behind every placement.</p>
@@ -313,7 +330,15 @@ function privacyHtml() {
 <p>Some product lists include "Shop" links to retailers such as Amazon. These carry an affiliate tag, so we may earn a commission if you buy something. Following one of those links takes you to the retailer, who then handles your data under their own privacy policy. As an Amazon Associate we earn from qualifying purchases.</p>
 
 <h2>Analytics and ads</h2>
-<p>We don't run advertising networks or third-party analytics trackers on this site.</p>
+${
+  CF_ANALYTICS_TOKEN
+    ? `<p>We use <a href="https://www.cloudflare.com/web-analytics/" rel="noopener" target="_blank">Cloudflare Web Analytics</a> to count page views. It sets no cookies, stores nothing on your device, and doesn't fingerprint you or track you across other sites — we only see aggregate numbers, never individuals.</p>`
+    : `<p>We don't run third-party analytics trackers on this site.</p>`
+}${
+  ADSENSE_CLIENT
+    ? `\n<p>Some pages show ads served by Google AdSense, which may use cookies to personalise them. You can manage this at <a href="https://myadcenter.google.com/" rel="noopener" target="_blank">Google Ad Center</a>.</p>`
+    : `\n<p>We don't run advertising networks on this site.</p>`
+}
 
 <h2>Deleting your data</h2>
 <p>You can unpublish any list you posted from within the app. To delete your account and everything attached to it, email us and we'll remove it.</p>

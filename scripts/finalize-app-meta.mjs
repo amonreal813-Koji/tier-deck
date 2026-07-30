@@ -67,6 +67,16 @@ if (!fs.existsSync(APP_HTML)) {
 let html = fs.readFileSync(APP_HTML, 'utf8');
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+
+// Cookieless page-view counting, off unless CF_ANALYTICS_TOKEN is set in the
+// Netlify env (same opt-in switch the SEO build uses, so both halves of the
+// site turn on together).
+const CF_ANALYTICS_TOKEN = process.env.CF_ANALYTICS_TOKEN || '';
+const analytics = CF_ANALYTICS_TOKEN
+  ? `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${esc(
+      CF_ANALYTICS_TOKEN
+    )}"}'></script>\n`
+  : '';
 const meta = `
 <meta name="description" content="${esc(DESC)}">
 <meta property="og:title" content="${esc(TITLE)}">
@@ -86,7 +96,7 @@ const meta = `
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Tier Deck">
-`;
+${analytics}`;
 
 // Idempotent: the block is fenced by markers, so re-running always replaces it
 // with the current tag set (a "does it already have og:image?" check would
